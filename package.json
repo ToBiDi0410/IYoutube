@@ -6,7 +6,8 @@
     "types": "output/main.d.ts",
     "scripts": {
         "test": "npm run compile && node test/test.js",
-        "compile": "tsc"
+        "compile": "tsc",
+        "publish": "npm version patch -m 'Fix' && npm publish --access=public ./ && git push"
     },
     "keywords": [],
     "author": "",
