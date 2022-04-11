@@ -6,7 +6,7 @@ import { StorageAdapter } from "./interfaces/StorageAdapter";
 const CLIENT_ID = "861556708454-d6dlm3lh05idd8npek18k6be8ba3oc68.apps.googleusercontent.com";
 const CLIENT_SECRET = "SboVhoG9s0rNafixCSGGKXAT";
 
-export class IYoutubeAuthenticator {
+export class Authenticator {
     httpClient : HTTPClient;
     storageAdapter : StorageAdapter;
 

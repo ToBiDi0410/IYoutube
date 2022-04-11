@@ -1,4 +1,4 @@
-import { IYoutubeAuthenticator } from "./Authenticator";
+import { Authenticator } from "./Authenticator";
 import { HTTPClient } from "./interfaces/HTTPClient";
 import { StorageAdapter } from "./interfaces/StorageAdapter";
 import { WrappedHTTPClient } from "./WrappedHTTPClient";
@@ -10,13 +10,13 @@ import { User } from "./fetchers/User";
 import { Playlist } from "./interfaces/Playlist";
 import { DEBUG } from "./constants";
 
-export default class IYoutubeClient {
+export default class IYoutube {
 
     rawHttpClient: HTTPClient;
     wrappedHttpClient: WrappedHTTPClient;
 
     storageAdapter : StorageAdapter;
-    authenticator: IYoutubeAuthenticator;
+    authenticator: Authenticator;
 
     #explorer : Explorer;
     #user : User;
@@ -26,7 +26,7 @@ export default class IYoutubeClient {
         this.wrappedHttpClient = new WrappedHTTPClient(this.rawHttpClient);
         this.storageAdapter = storageAdapater;
 
-        this.authenticator = new IYoutubeAuthenticator(this.rawHttpClient, this.storageAdapter);
+        this.authenticator = new Authenticator(this.rawHttpClient, this.storageAdapter);
         this.wrappedHttpClient.authorizationHeaderCallback = () => { return this.authenticator.getAuthorizationHeader() };
 
         this.#explorer = new Explorer(this.wrappedHttpClient, this);

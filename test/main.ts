@@ -1,13 +1,13 @@
 import { NodeFSStorageAdapater } from './NodeFSStorageAdapter';
 import { NodeFetchClientAdapter } from './NodeFetchClientAdapter';
 import { SearchType } from '../src/fetchers/SearchContinuatedList';
-import IYoutubeClient from '../src/main';
+import IYoutube from '../src/main';
 
 (async function() {
     var httpClient = new NodeFetchClientAdapter();
     var storageAdapater = new NodeFSStorageAdapater("./test/");
 
-    var ytClient = new IYoutubeClient(httpClient, storageAdapater);
+    var ytClient = new IYoutube(httpClient, storageAdapater);
     await ytClient.init();
 
     var search = await ytClient.search("Rock reviews", SearchType.ANY);
