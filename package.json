@@ -1,13 +1,13 @@
 {
     "name": "iyoutube",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "description": "The ultimate unofficial YouTube API Client for Javascript",
     "main": "output/main.js",
     "types": "output/main.d.ts",
     "scripts": {
         "test": "npm run compile && node test/test.js",
         "compile": "tsc",
-        "publish": "npm version patch -m 'Fix' && npm publish --access=public ./ && git push"
+        "simplepublish": "npm version patch -m 'Fix' && npm publish --access=public ./ && git push"
     },
     "keywords": [],
     "author": "",
