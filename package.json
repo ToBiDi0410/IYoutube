@@ -14,9 +14,6 @@
         "ts-node": "^10.7.0"
     },
     "devDependencies": {
-        "console-error": "^0.0.4",
-        "console-info": "^0.0.5",
-        "console-warn": "^0.0.4",
         "nodemon": "^2.0.15"
     }
 }
