@@ -1,7 +1,7 @@
 {
     "name": "iyoutube",
-    "version": "0.0.3",
-    "description": "",
+    "version": "0.0.4",
+    "description": "The ultimate unofficial YouTube API Client for Javascript",
     "main": "src/main.ts",
     "scripts": {
         "test": "npx nodemon test/main.ts --ignore *.json"
