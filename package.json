@@ -1,0 +1,22 @@
+{
+    "name": "iyoutube",
+    "version": "1.0.0",
+    "description": "",
+    "main": "src/main.ts",
+    "scripts": {
+        "test": "npx nodemon test/main.ts --ignore *.json"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "node-fetch": "^2.6.7",
+        "ts-node": "^10.7.0"
+    },
+    "devDependencies": {
+        "console-error": "^0.0.4",
+        "console-info": "^0.0.5",
+        "console-warn": "^0.0.4",
+        "nodemon": "^2.0.15"
+    }
+}
