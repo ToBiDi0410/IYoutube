@@ -68,3 +68,5 @@ export default class IYoutube {
         if(this.authenticator.requiresLogin()) throw new Error("This Instance of IYoutube is not authenticated");
     }
 }
+
+module.exports = IYoutube;

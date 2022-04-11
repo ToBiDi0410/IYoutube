@@ -1,6 +1,5 @@
 import { HTTPRequestMethod } from "../interfaces/HTTPClient";
 import { WrappedHTTPClient } from "../WrappedHTTPClient";
-import fs from 'fs';
 import helpers from "./helpers";
 import { Video } from "../interfaces/Video";
 import IYoutubeClient from "../main";
@@ -26,10 +25,8 @@ export class Explorer {
                 browseId: "FEexplore"
             }
         });
-
         const resJSON = await JSON.parse(res.data);
-        fs.writeFileSync("tempres.json", JSON.stringify(resJSON, null, 2));
-
+        
         const popularShelf = helpers.recursiveSearchForKey("expandedShelfContentsRenderer", resJSON)[0];
         let items = popularShelf.items;
         items = helpers.processRendererItems(items, this.httpclient);

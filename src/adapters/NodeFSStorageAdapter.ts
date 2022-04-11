@@ -1,5 +1,5 @@
-import { StorageAdapter } from "../src/interfaces/StorageAdapter";
-import fs from 'fs';
+import { StorageAdapter } from "../interfaces/StorageAdapter";
+import * as fs from 'fs';
 import path from "path";
 
 /**

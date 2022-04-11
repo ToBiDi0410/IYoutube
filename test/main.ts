@@ -1,5 +1,5 @@
-import { NodeFSStorageAdapater } from './NodeFSStorageAdapter';
-import { NodeFetchClientAdapter } from './NodeFetchClientAdapter';
+import { NodeFSStorageAdapater } from '../src/adapters/NodeFSStorageAdapter';
+import { NodeFetchClientAdapter } from '../src/adapters/NodeFetchClientAdapter';
 import { SearchType } from '../src/fetchers/SearchContinuatedList';
 import IYoutube from '../src/main';
 

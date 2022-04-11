@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+      "outDir": "output",
+      "target": "ES2015",
+      "removeComments": true,
+      "module": "CommonJS",
+      "declaration": true,
+      "strict": true,
+    },
+    "include": ["./src/*"],
+}

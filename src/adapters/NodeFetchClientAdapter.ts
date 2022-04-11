@@ -1,4 +1,4 @@
-import { HTTPClient, HTTPRequestOptions } from "../src/interfaces/HTTPClient";
+import { HTTPClient, HTTPRequestOptions } from "../interfaces/HTTPClient";
 const fetch = require("node-fetch");
 
 /**
