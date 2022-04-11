@@ -64,3 +64,8 @@ Searches and Playlist Video Lists are using the Continuated List format. You hav
 #### TODO
 You can find the current TODO list [here](./todo.md)
 
+#### Credits
+- Authentication Method: https://github.com/pytube/pytube
+- Consent Confirmation: https://github.com/ytdl-org/youtube-dl/
+- Visual Studio Code for Development: https://code.visualstudio.com/
+- Google for their API and Chrome Dev Tools to analyse it :)
