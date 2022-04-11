@@ -25,9 +25,9 @@ export class Authenticator {
     async init() {
         if(DEBUG) console.log(CONSOLE_COLORS.fg.cyan + "[AUTHENTICATOR] Initializing Authenticator...", CONSOLE_COLORS.reset);
 
-        if(this.storageAdapter.exists("tokens.json")) {
+        if(this.storageAdapter.exists(TOKEN_FILE)) {
             if(DEBUG) console.log(CONSOLE_COLORS.fg.magenta + "[AUTHENTICATOR] Found Token File in Storage, reading it...", CONSOLE_COLORS.reset);
-            var str = this.storageAdapter.get("tokens.json");
+            var str = this.storageAdapter.get(TOKEN_FILE);
             if(str) {
                 this.#token = JSON.parse(str);
                 if(DEBUG) console.log(CONSOLE_COLORS.bright + CONSOLE_COLORS.fg.green + "[AUTHENTICATOR] Now using Token from Storage (expires: " + new Date(this.#token.expireDate).toLocaleString() + ")", CONSOLE_COLORS.reset);
@@ -93,7 +93,7 @@ export class Authenticator {
             res = JSON.parse(res.data);
             this.#token = { type: res.token_type, access: res.access_token, refresh: this.#token.refresh, expireDate: (new Date().getTime() + 1000 * res.expires_in) };
             if(DEBUG) console.log(CONSOLE_COLORS.bright + CONSOLE_COLORS.fg.green + "[AUTHENTICATOR] Refreshed the Access Token using the refresh Token", CONSOLE_COLORS.reset);
-            await this.storageAdapter.set("tokens.json", JSON.stringify({...this.#token }));
+            await this.storageAdapter.set(TOKEN_FILE, JSON.stringify({...this.#token }));
             if(DEBUG) console.log(CONSOLE_COLORS.bright + CONSOLE_COLORS.fg.yellow + "[AUTHENTICATOR] Current Token written to Storage", CONSOLE_COLORS.reset);
         }
         return this.#token;
@@ -104,5 +104,7 @@ export class Authenticator {
         return currentToken.type + " " + currentToken.access;
     }
 }
+
+const TOKEN_FILE = "IYoutubeTokens.json";
 
 //Data needs to be strigified because we are working with the raw HTTPClient, not the WrappedHTTPClient

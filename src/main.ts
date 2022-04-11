@@ -41,7 +41,6 @@ export default class IYoutube {
     async search(term: string, type : SearchType):Promise<ContinuatedList> {
         this.#throwErrorIfNotReady();
         var list = new SearchConitinuatedList(term, type, this.wrappedHttpClient);
-        await list.loadFurhter();
         return list;
     }
 
@@ -66,6 +65,6 @@ export default class IYoutube {
     #throwErrorIfNotReady(){
         if(!this.storageAdapter) throw new Error("The provided Storage Adapter was invalid");
         if(!this.rawHttpClient) throw new Error("The provided HTTP Client was invalid");
-        if(this.authenticator.requiresLogin()) throw new Error("This Instance of IYoutubeClient is not authenticated");
+        if(this.authenticator.requiresLogin()) throw new Error("This Instance of IYoutube is not authenticated");
     }
 }
