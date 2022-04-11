@@ -1,7 +1,6 @@
 import { StorageAdapter } from "../interfaces/StorageAdapter";
 import * as fs from 'fs';
-import path from "path";
-
+import * as path from 'path';
 /**
  * An Adapter for the Node FS Api, so that it can be used as Storage Adapter with
  * the IYoutube Client
@@ -12,6 +11,7 @@ export class NodeFSStorageAdapater implements StorageAdapter {
 
     constructor(basePath:string) {
         this.basePath = basePath;
+        fs.mkdirSync(basePath, { recursive: true });
     }
 
     set(paths: string, value: string): boolean {

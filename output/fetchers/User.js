@@ -22,6 +22,7 @@ class User {
     }
     getPlaylists() {
         return __awaiter(this, void 0, void 0, function* () {
+            this.client.throwErrorIfNotReady();
             const res = yield this.httpclient.request({
                 method: HTTPClient_1.HTTPRequestMethod.POST,
                 url: constants_1.ENDPOINT_ADDTOPLAYLIST,
@@ -53,6 +54,7 @@ class User {
     }
     getSubscriptions() {
         return __awaiter(this, void 0, void 0, function* () {
+            this.client.throwErrorIfNotReady();
             const res = yield this.httpclient.request({
                 method: HTTPClient_1.HTTPRequestMethod.POST,
                 url: constants_1.ENDPOINT_BROWSE,
@@ -67,6 +69,7 @@ class User {
         });
     }
     getSubscriptionFeed() {
+        this.client.throwErrorIfNotReady();
         return new SubscriptionFeedContinuatedList_1.SubscriptionFeedContinuatedList(this.httpclient);
     }
 }

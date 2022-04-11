@@ -2,19 +2,20 @@ import { HTTPRequestMethod } from "../interfaces/HTTPClient";
 import { WrappedHTTPClient } from "../WrappedHTTPClient";
 import helpers from "./helpers";
 import { Video } from "../interfaces/Video";
-import IYoutubeClient from "../main";
+import IYoutube from "../IYoutube";
 import { ENDPOINT_BROWSE } from "../constants";
 
 export class Explorer {
     httpclient: WrappedHTTPClient;
-    client: IYoutubeClient;
+    client: IYoutube;
 
-    constructor(httpclient : WrappedHTTPClient, client: IYoutubeClient) {
+    constructor(httpclient : WrappedHTTPClient, client: IYoutube) {
         this.httpclient = httpclient;
         this.client = client;
     }
 
     async getPopularVideos():Promise<Array<Video>> {
+        this.client.throwErrorIfNotReady();
         const res = await this.httpclient.request({
             method: HTTPRequestMethod.POST,
             url: ENDPOINT_BROWSE,
@@ -34,6 +35,7 @@ export class Explorer {
     }
 
     async getTrendsNow():Promise<Array<Video>> {
+        this.client.throwErrorIfNotReady();
         const res = await this.httpclient.request({
             method: HTTPRequestMethod.POST,
             url: ENDPOINT_BROWSE,

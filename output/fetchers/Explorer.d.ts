@@ -1,10 +1,10 @@
 import { WrappedHTTPClient } from "../WrappedHTTPClient";
 import { Video } from "../interfaces/Video";
-import IYoutubeClient from "../main";
+import IYoutube from "../IYoutube";
 export declare class Explorer {
     httpclient: WrappedHTTPClient;
-    client: IYoutubeClient;
-    constructor(httpclient: WrappedHTTPClient, client: IYoutubeClient);
+    client: IYoutube;
+    constructor(httpclient: WrappedHTTPClient, client: IYoutube);
     getPopularVideos(): Promise<Array<Video>>;
     getTrendsNow(): Promise<Array<Video>>;
 }

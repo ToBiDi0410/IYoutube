@@ -2,12 +2,12 @@
 import { Channel } from "diagnostics_channel";
 import { ContinuatedList } from "./ContinuatedList";
 import { Playlist } from "../interfaces/Playlist";
-import IYoutubeClient from "../main";
+import IYoutube from "../IYoutube";
 import { WrappedHTTPClient } from "../WrappedHTTPClient";
 export declare class User {
     httpclient: WrappedHTTPClient;
-    client: IYoutubeClient;
-    constructor(httpclient: WrappedHTTPClient, client: IYoutubeClient);
+    client: IYoutube;
+    constructor(httpclient: WrappedHTTPClient, client: IYoutube);
     getPlaylists(): Promise<Array<Playlist>>;
     getWatchLaterPlaylist(): Promise<Playlist>;
     getLikedPlaylist(): Promise<Playlist>;

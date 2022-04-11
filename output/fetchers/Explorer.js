@@ -20,6 +20,7 @@ class Explorer {
     }
     getPopularVideos() {
         return __awaiter(this, void 0, void 0, function* () {
+            this.client.throwErrorIfNotReady();
             const res = yield this.httpclient.request({
                 method: HTTPClient_1.HTTPRequestMethod.POST,
                 url: constants_1.ENDPOINT_BROWSE,
@@ -39,6 +40,7 @@ class Explorer {
     }
     getTrendsNow() {
         return __awaiter(this, void 0, void 0, function* () {
+            this.client.throwErrorIfNotReady();
             const res = yield this.httpclient.request({
                 method: HTTPClient_1.HTTPRequestMethod.POST,
                 url: constants_1.ENDPOINT_BROWSE,

@@ -5,7 +5,7 @@
     "main": "output/main.js",
     "types": "output/main.d.ts",
     "scripts": {
-        "test": "npx nodemon test/main.ts --ignore *.json",
+        "test": "npm run compile && node test/test.js",
         "compile": "tsc"
     },
     "keywords": [],

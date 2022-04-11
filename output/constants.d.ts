@@ -1,4 +1,4 @@
-export declare const DEBUG = false;
+export declare const DEBUG = true;
 export declare const DEFAULT_API_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
 export declare const DEFAULT_CLIENT_VERSION = "2.20220406.09.00";
 export declare const DEFAULT_CLIENT_NAME = "1";

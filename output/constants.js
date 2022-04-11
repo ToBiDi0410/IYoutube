@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ENDPOINT_ADDTOPLAYLIST = exports.ENDPOINT_UNSUBSCRIBE = exports.ENDPOINT_SUBSCRIBE = exports.ENDPOINT_REMOVELIKE = exports.ENDPOINT_DISLIKE = exports.ENDPOINT_LIKE = exports.ENDPOINT_SEARCH = exports.ENDPOINT_BROWSE = exports.CONSOLE_COLORS = exports.DEFAULT_CONTEXT = exports.DEFAULT_USER_AGENT = exports.DEFAULT_CLIENT_NAME = exports.DEFAULT_CLIENT_VERSION = exports.DEFAULT_API_KEY = exports.DEBUG = void 0;
-exports.DEBUG = false;
+exports.DEBUG = true;
 exports.DEFAULT_API_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
 exports.DEFAULT_CLIENT_VERSION = "2.20220406.09.00";
 exports.DEFAULT_CLIENT_NAME = "1";

@@ -2,7 +2,7 @@ import { Channel } from "diagnostics_channel";
 import { ContinuatedList } from "./ContinuatedList";
 import { HTTPRequestMethod } from "../interfaces/HTTPClient";
 import { Playlist } from "../interfaces/Playlist";
-import IYoutubeClient from "../main";
+import IYoutube from "../IYoutube";
 import { WrappedHTTPClient } from "../WrappedHTTPClient";
 import helpers from "./helpers";
 import { SubscriptionFeedContinuatedList } from "./SubscriptionFeedContinuatedList";
@@ -10,14 +10,15 @@ import { ENDPOINT_ADDTOPLAYLIST, ENDPOINT_BROWSE } from "../constants";
 
 export class User {
     httpclient: WrappedHTTPClient;
-    client : IYoutubeClient;
+    client : IYoutube;
 
-    constructor(httpclient : WrappedHTTPClient, client: IYoutubeClient) {
+    constructor(httpclient : WrappedHTTPClient, client: IYoutube) {
         this.httpclient = httpclient;
         this.client = client;
     }
 
     async getPlaylists():Promise<Array<Playlist>> {
+        this.client.throwErrorIfNotReady();
         const res = await this.httpclient.request({
             method: HTTPRequestMethod.POST,
             url: ENDPOINT_ADDTOPLAYLIST,
@@ -48,6 +49,7 @@ export class User {
     }
 
     async getSubscriptions():Promise<Array<Channel>> {
+        this.client.throwErrorIfNotReady();
         const res = await this.httpclient.request({
             method: HTTPRequestMethod.POST,
             url: ENDPOINT_BROWSE,
@@ -63,6 +65,7 @@ export class User {
     }
 
     getSubscriptionFeed():ContinuatedList {
+        this.client.throwErrorIfNotReady();
         return new SubscriptionFeedContinuatedList(this.httpclient);
     }
 }
