@@ -1,6 +1,6 @@
 {
     "name": "iyoutube",
-    "version": "0.0.12",
+    "version": "0.0.13",
     "description": "The ultimate unofficial YouTube API Client for Javascript",
     "main": "output/main.js",
     "types": "output/main.d.ts",
