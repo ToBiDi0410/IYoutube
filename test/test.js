@@ -29,10 +29,13 @@ const ytClient = require("../").nodeInst;
 
     var testPlaylistVideos = testPlaylist.getContinuatedList(); //Get the Continuated List
     await testPlaylistVideos.loadFurhter(); //Load Batch of Videos into List
-    console.log(testPlaylistVideos.length);
+    console.log(testPlaylistVideos.getVideos().length);
     await testPlaylistVideos.loadFurhter(); //Load next Batch of Videos into List
-    console.log(testPlaylistVideos.results.length);
+    console.log(testPlaylistVideos.getVideos().length);
     console.log(testPlaylistVideos.endReached);
+
+    //Dirty way of getting the Results (without any Type), use the Getters instead!
+    console.log(testPlaylistVideos.results);
 
     // The Video Amount per Batch varies from List Type (e.g Playlist, Search) but also from Randomness of the Youtube API
     // Hint: loadFurther() returns the new Videos and adds them to the results at the same Time
