@@ -1,8 +1,8 @@
 import { HTTPRequestMethod } from "../interfaces/HTTPClient";
-import { WrappedHTTPClient } from "../WrappedHTTPClient";
 import helpers from "./helpers";
-import { ContinuatedList } from "./ContinuatedList";
 import { ENDPOINT_BROWSE } from "../constants";
+import { Video, WrappedHTTPClient } from "../main";
+import { ContinuatedList } from "./ContinuatedList";
 
 export class PlaylistContinuatedList extends ContinuatedList {
     constructor(playlistId : string, httpclient : WrappedHTTPClient) {

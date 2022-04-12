@@ -17,9 +17,9 @@ var _Channel_instances, _Channel_parseC4FromHeader, _Channel_parseOwnerBadges, _
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Channel = void 0;
 const constants_1 = require("../constants");
+const main_1 = require("../main");
 const helpers_1 = require("../fetchers/helpers");
 const HTTPClient_1 = require("./HTTPClient");
-const main_1 = require("../main");
 class Channel {
     constructor(httpclient) {
         _Channel_instances.add(this);
@@ -111,6 +111,17 @@ class Channel {
         if (thumbnailContainer) {
             this.thumbnails = thumbnailContainer;
         }
+    }
+    fromCommentRenderer(obj) {
+        const navigationEndpoint = helpers_1.default.recursiveSearchForKey("authorEndpoint", obj)[0];
+        if (navigationEndpoint)
+            this.channelId = helpers_1.default.recursiveSearchForKey("browseId", navigationEndpoint)[0];
+        const titleContainer = helpers_1.default.recursiveSearchForKey("authorText", obj)[0];
+        if (titleContainer)
+            this.title = helpers_1.default.recursiveSearchForKey("simpleText", titleContainer).join("");
+        const authorThumbnailContainer = helpers_1.default.recursiveSearchForKey("authorThumbnail", obj)[0];
+        if (authorThumbnailContainer)
+            this.thumbnails = helpers_1.default.recursiveSearchForKey("thumbnails", authorThumbnailContainer)[0];
     }
     loadAll() {
         return __awaiter(this, void 0, void 0, function* () {

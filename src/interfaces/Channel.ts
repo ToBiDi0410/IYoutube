@@ -1,11 +1,9 @@
 import { ENDPOINT_BROWSE, ENDPOINT_SUBSCRIBE, ENDPOINT_UNSUBSCRIBE } from "../constants";
+import { ContinuatedList, Thumbnail, ChannelBadge, WrappedHTTPClient  } from "../main";
 import helpers from "../fetchers/helpers"
-import { WrappedHTTPClient } from "../WrappedHTTPClient";
-import { ChannelBadge } from "./ChannelBadge";
 import { HTTPRequestMethod } from "./HTTPClient";
-import { Thumbnail } from "./Thumbnail";
 import { ChannelLink } from "./ChannelLink";
-import { ContinuatedList } from "../main";
+
 
 export class Channel {
     channelId?: string;
@@ -141,6 +139,20 @@ export class Channel {
            this.thumbnails = thumbnailContainer; 
         }
 
+    }
+
+    fromCommentRenderer(obj: any) {
+        const navigationEndpoint = helpers.recursiveSearchForKey("authorEndpoint", obj)[0];
+        if(navigationEndpoint) 
+            this.channelId = helpers.recursiveSearchForKey("browseId", navigationEndpoint)[0];
+
+        const titleContainer = helpers.recursiveSearchForKey("authorText", obj)[0];
+        if(titleContainer)
+            this.title = helpers.recursiveSearchForKey("simpleText", titleContainer).join("");
+
+        const authorThumbnailContainer = helpers.recursiveSearchForKey("authorThumbnail", obj)[0];
+        if(authorThumbnailContainer)
+            this.thumbnails = helpers.recursiveSearchForKey("thumbnails", authorThumbnailContainer)[0];
     }
 
     async loadAll() {

@@ -19,17 +19,18 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _ContinuatedList_requestOptions, _ContinuatedList_httpclient, _ContinuatedList_dataprocessor, _ContinuatedList_continuationToken;
+var _ContinuatedList_requestOptions, _ContinuatedList_httpclient, _ContinuatedList_dataprocessor;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContinuatedList = void 0;
 const helpers_1 = require("./helpers");
+const main_1 = require("../main");
 class ContinuatedList {
     constructor(requestOptions, dataprocessor, httpclient, onlyContinuation) {
         this.endReached = false;
         _ContinuatedList_requestOptions.set(this, void 0);
         _ContinuatedList_httpclient.set(this, void 0);
         _ContinuatedList_dataprocessor.set(this, void 0);
-        _ContinuatedList_continuationToken.set(this, "");
+        this.continuationToken = "";
         this.onlyContinuation = false;
         __classPrivateFieldSet(this, _ContinuatedList_requestOptions, requestOptions, "f");
         __classPrivateFieldSet(this, _ContinuatedList_httpclient, httpclient, "f");
@@ -43,11 +44,14 @@ class ContinuatedList {
             if (this.endReached)
                 return [];
             var joinedData = __classPrivateFieldGet(this, _ContinuatedList_requestOptions, "f").data;
-            if (__classPrivateFieldGet(this, _ContinuatedList_continuationToken, "f") != "") {
-                joinedData.continuation = __classPrivateFieldGet(this, _ContinuatedList_continuationToken, "f");
-                if (this.onlyContinuation) {
-                    delete joinedData["browseId"];
-                }
+            if (!joinedData)
+                joinedData = {};
+            if (this.continuationToken != "") {
+                joinedData.continuation = this.continuationToken;
+                if (this.onlyContinuation)
+                    joinedData = {
+                        continuation: this.continuationToken
+                    };
             }
             var res = yield __classPrivateFieldGet(this, _ContinuatedList_httpclient, "f").request({
                 method: __classPrivateFieldGet(this, _ContinuatedList_requestOptions, "f").method,
@@ -59,7 +63,7 @@ class ContinuatedList {
             const resJSON = yield JSON.parse(res.data);
             const continuationCommand = helpers_1.default.recursiveSearchForKey("continuationCommand", resJSON)[0];
             if (continuationCommand)
-                __classPrivateFieldSet(this, _ContinuatedList_continuationToken, continuationCommand.token, "f");
+                this.continuationToken = continuationCommand.token;
             else
                 this.endReached = true;
             let items = yield __classPrivateFieldGet(this, _ContinuatedList_dataprocessor, "f").call(this, resJSON);
@@ -69,9 +73,23 @@ class ContinuatedList {
         });
     }
     getByType(type) {
-        const refactoredType = type;
-        return this.results.filter((elem) => { return elem instanceof refactoredType; });
+        return this.results.filter((elem) => { return elem instanceof type; });
+    }
+    getVideos() {
+        return this.getByType(main_1.Video);
+    }
+    getPlaylists() {
+        return this.getByType(main_1.Playlist);
+    }
+    getChannels() {
+        return this.getByType(main_1.Channel);
+    }
+    getComments() {
+        return this.getByType(main_1.Comment);
+    }
+    getCommentThreads() {
+        return this.getByType(main_1.CommentThread);
     }
 }
 exports.ContinuatedList = ContinuatedList;
-_ContinuatedList_requestOptions = new WeakMap(), _ContinuatedList_httpclient = new WeakMap(), _ContinuatedList_dataprocessor = new WeakMap(), _ContinuatedList_continuationToken = new WeakMap();
+_ContinuatedList_requestOptions = new WeakMap(), _ContinuatedList_httpclient = new WeakMap(), _ContinuatedList_dataprocessor = new WeakMap();

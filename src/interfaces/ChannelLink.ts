@@ -1,4 +1,4 @@
-import { Thumbnail } from "./Thumbnail";
+import { Thumbnail } from "../main";
 
 export interface ChannelLink {
     url: string;

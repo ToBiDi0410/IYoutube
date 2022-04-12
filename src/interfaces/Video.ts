@@ -1,9 +1,7 @@
 import { ENDPOINT_DISLIKE, ENDPOINT_LIKE, ENDPOINT_REMOVELIKE } from "../constants";
 import helpers from "../fetchers/helpers";
-import { WrappedHTTPClient } from "../WrappedHTTPClient";
-import { Channel } from "./Channel";
+import { CommentSectionContinuatedList, ContinuatedList, WrappedHTTPClient, Channel, Thumbnail } from "../main";
 import { HTTPRequestMethod } from "./HTTPClient";
-import { Thumbnail } from "./Thumbnail";
 
 export class Video {
 
@@ -92,6 +90,12 @@ export class Video {
         }
 
         this.playable = helpers.recursiveSearchForKey("isPlayable", obj)[0];
+    }
+
+    async getCommentThreadList():Promise<ContinuatedList> {
+        var list = new CommentSectionContinuatedList(this.videoId, this.httpclient);
+        await list.loadFurhter();
+        return list;
     }
 
     async like() {

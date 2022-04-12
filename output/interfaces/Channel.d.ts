@@ -1,8 +1,5 @@
-import { WrappedHTTPClient } from "../WrappedHTTPClient";
-import { ChannelBadge } from "./ChannelBadge";
-import { Thumbnail } from "./Thumbnail";
+import { ContinuatedList, Thumbnail, ChannelBadge, WrappedHTTPClient } from "../main";
 import { ChannelLink } from "./ChannelLink";
-import { ContinuatedList } from "../main";
 export declare class Channel {
     #private;
     channelId?: string;
@@ -31,6 +28,7 @@ export declare class Channel {
     fromVideoOwnerRenderer(obj: any): void;
     fromPlaylistVideoRendererBylineText(obj: any): void;
     fromGridChannelRenderer(obj: any): void;
+    fromCommentRenderer(obj: any): void;
     loadAll(): Promise<void>;
     loadDetailsFromAboutPage(): Promise<void>;
     loadDetailsFromChannelsPages(): Promise<void>;

@@ -1,15 +1,18 @@
-/// <reference types="node" />
-import { Channel } from "diagnostics_channel";
 import { WrappedHTTPClient } from "../WrappedHTTPClient";
 import { HTTPRequestOptions } from "../interfaces/HTTPClient";
-import { Playlist } from "../interfaces/Playlist";
-import { Video } from "../interfaces/Video";
+import { Video, Channel, Playlist, Comment, CommentThread } from "../main";
 export declare class ContinuatedList {
     #private;
-    results: Array<Video | Channel | Playlist>;
+    results: Array<Video | Channel | Playlist | Comment | CommentThread>;
     endReached: boolean;
+    continuationToken: string;
     onlyContinuation: boolean;
     constructor(requestOptions: HTTPRequestOptions, dataprocessor: Function, httpclient: WrappedHTTPClient, onlyContinuation?: boolean);
     loadFurhter(): Promise<any>;
-    getByType(type: typeof Video | typeof Playlist | typeof Channel): (Video | Playlist | Channel)[];
+    getByType(type: any): (Video | Channel | Playlist | Comment | CommentThread)[];
+    getVideos(): Array<Video>;
+    getPlaylists(): Array<Playlist>;
+    getChannels(): Array<Channel>;
+    getComments(): Array<Comment>;
+    getCommentThreads(): Array<CommentThread>;
 }

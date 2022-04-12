@@ -24,8 +24,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Playlist = void 0;
 const helpers_1 = require("../fetchers/helpers");
 const PlaylistContinuatedList_1 = require("../fetchers/PlaylistContinuatedList");
-const Channel_1 = require("./Channel");
 const HTTPClient_1 = require("./HTTPClient");
+const main_1 = require("../main");
 const constants_1 = require("../constants");
 class Playlist {
     constructor(httpclient) {
@@ -44,7 +44,7 @@ class Playlist {
         this.videoCount = helpers_1.default.recursiveSearchForKey("videoCount", obj)[0];
         const channelContainer = helpers_1.default.recursiveSearchForKey("shortBylineText", obj)[0];
         if (channelContainer) {
-            this.owner = new Channel_1.Channel(this.httpclient);
+            this.owner = new main_1.Channel(this.httpclient);
             this.owner.fromPlaylistRenderer(obj);
         }
     }
@@ -105,7 +105,7 @@ class Playlist {
                 throw new Error("PrimaryInfoRenderer was missing");
             const videoOwnerContainer = helpers_1.default.recursiveSearchForKey("videoOwner", resJSON)[0];
             if (videoOwnerContainer) {
-                this.owner = new Channel_1.Channel(this.httpclient);
+                this.owner = new main_1.Channel(this.httpclient);
                 this.owner.fromVideoOwnerRenderer(videoOwnerContainer);
             }
         });

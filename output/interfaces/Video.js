@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Video = void 0;
 const constants_1 = require("../constants");
 const helpers_1 = require("../fetchers/helpers");
-const Channel_1 = require("./Channel");
+const main_1 = require("../main");
 const HTTPClient_1 = require("./HTTPClient");
 class Video {
     constructor(httpclient) {
@@ -46,7 +46,7 @@ class Video {
         if (timeTextContainer)
             this.publishedText = helpers_1.default.recursiveSearchForKey("simpleText", timeTextContainer)[0];
         if (helpers_1.default.recursiveSearchForKey("ownerText", obj).length > 0) {
-            this.owner = new Channel_1.Channel(this.httpclient);
+            this.owner = new main_1.Channel(this.httpclient);
             this.owner.fromVideoRenderer(obj);
         }
     }
@@ -54,7 +54,7 @@ class Video {
         this.fromVideoRenderer(obj);
         const shortBylineText = helpers_1.default.recursiveSearchForKey("shortBylineText", obj)[0];
         if (shortBylineText) {
-            this.owner = new Channel_1.Channel(this.httpclient);
+            this.owner = new main_1.Channel(this.httpclient);
             this.owner.fromGridVideoRenderer(obj);
         }
     }
@@ -62,10 +62,17 @@ class Video {
         this.fromVideoRenderer(obj);
         const shortBylineText = helpers_1.default.recursiveSearchForKey("shortBylineText", obj)[0];
         if (shortBylineText) {
-            this.owner = new Channel_1.Channel(this.httpclient);
+            this.owner = new main_1.Channel(this.httpclient);
             this.owner.fromPlaylistVideoRendererBylineText(shortBylineText);
         }
         this.playable = helpers_1.default.recursiveSearchForKey("isPlayable", obj)[0];
+    }
+    getCommentThreadList() {
+        return __awaiter(this, void 0, void 0, function* () {
+            var list = new main_1.CommentSectionContinuatedList(this.videoId, this.httpclient);
+            yield list.loadFurhter();
+            return list;
+        });
     }
     like() {
         return __awaiter(this, void 0, void 0, function* () {

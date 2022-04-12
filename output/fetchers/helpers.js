@@ -4,6 +4,7 @@ const Channel_1 = require("../interfaces/Channel");
 const Playlist_1 = require("../interfaces/Playlist");
 const Video_1 = require("../interfaces/Video");
 const constants_1 = require("../constants");
+const main_1 = require("../main");
 function recursiveSearchForPair(searchKey, obj) {
     if (typeof obj != 'object')
         return [];
@@ -78,6 +79,16 @@ function processRendererItems(arr, httpclient) {
             var channel = new Channel_1.Channel(httpclient);
             channel.fromGridChannelRenderer(elem.gridChannelRenderer);
             return channel;
+        }
+        else if (elem.commentThreadRenderer) {
+            var commentThread = new main_1.CommentThread(httpclient);
+            commentThread.fromCommentThreadRenderer(elem.commentThreadRenderer);
+            return commentThread;
+        }
+        else if (elem.commentRenderer) {
+            var comment = new main_1.Comment(httpclient);
+            comment.fromCommentRenderer(elem.commentRenderer);
+            return comment;
         }
         else if (elem.playlistRenderer) {
             var playlist = new Playlist_1.Playlist(httpclient);

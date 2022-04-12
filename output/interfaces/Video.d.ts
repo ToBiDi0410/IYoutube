@@ -1,6 +1,4 @@
-import { WrappedHTTPClient } from "../WrappedHTTPClient";
-import { Channel } from "./Channel";
-import { Thumbnail } from "./Thumbnail";
+import { ContinuatedList, WrappedHTTPClient, Channel, Thumbnail } from "../main";
 export declare class Video {
     videoId?: any;
     title?: string;
@@ -17,6 +15,7 @@ export declare class Video {
     fromVideoRenderer(obj: any): void;
     fromGridRenderer(obj: any): void;
     fromPlaylistVideoRenderer(obj: any): void;
+    getCommentThreadList(): Promise<ContinuatedList>;
     like(): Promise<boolean>;
     dislike(): Promise<boolean>;
     removeLike(): Promise<boolean>;

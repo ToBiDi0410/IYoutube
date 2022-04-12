@@ -3,6 +3,7 @@ import { Playlist } from "../interfaces/Playlist";
 import { Video } from "../interfaces/Video";
 import { WrappedHTTPClient } from "../WrappedHTTPClient";
 import { CONSOLE_COLORS } from "../constants";
+import { Comment, CommentThread } from "../main";
 
 function recursiveSearchForPair(searchKey: string, obj: any) {
     if(typeof obj != 'object') return [];
@@ -82,6 +83,17 @@ function processRendererItems(arr : Array<any>, httpclient: WrappedHTTPClient) {
             var channel = new Channel(httpclient);
             channel.fromGridChannelRenderer(elem.gridChannelRenderer);
             return channel;
+        }
+
+        /* Comments */
+        else if(elem.commentThreadRenderer) {
+            var commentThread = new CommentThread(httpclient);
+            commentThread.fromCommentThreadRenderer(elem.commentThreadRenderer)
+            return commentThread;
+        } else if(elem.commentRenderer) {
+            var comment = new Comment(httpclient);
+            comment.fromCommentRenderer(elem.commentRenderer);
+            return comment;
         }
         
         /* Playlist */

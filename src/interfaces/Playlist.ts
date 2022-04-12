@@ -1,11 +1,7 @@
 import helpers from "../fetchers/helpers";
 import { PlaylistContinuatedList } from "../fetchers/PlaylistContinuatedList";
-import { WrappedHTTPClient } from "../WrappedHTTPClient";
-import { Channel } from "./Channel";
-import { ContinuatedList } from "../fetchers/ContinuatedList";
 import { HTTPRequestMethod } from "./HTTPClient";
-import { Thumbnail } from "./Thumbnail";
-import { Video } from "./Video";
+import { Video, Thumbnail, ContinuatedList, Channel, WrappedHTTPClient } from "../main";
 import { ENDPOINT_BROWSE, ENDPOINT_LIKE, ENDPOINT_REMOVELIKE } from "../constants";
 
 export class Playlist {

@@ -1,8 +1,5 @@
 import { PlaylistContinuatedList } from "../fetchers/PlaylistContinuatedList";
-import { WrappedHTTPClient } from "../WrappedHTTPClient";
-import { Channel } from "./Channel";
-import { Thumbnail } from "./Thumbnail";
-import { Video } from "./Video";
+import { Video, Thumbnail, Channel, WrappedHTTPClient } from "../main";
 export declare class Playlist {
     #private;
     playlistId?: string;

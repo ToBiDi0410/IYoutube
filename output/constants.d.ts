@@ -57,3 +57,5 @@ export declare const ENDPOINT_REMOVELIKE = "https://www.youtube.com/youtubei/v1/
 export declare const ENDPOINT_SUBSCRIBE = "https://www.youtube.com/youtubei/v1/subscription/subscribe";
 export declare const ENDPOINT_UNSUBSCRIBE = "https://www.youtube.com/youtubei/v1/subscription/unsubscribe";
 export declare const ENDPOINT_ADDTOPLAYLIST = "https://www.youtube.com/youtubei/v1/playlist/get_add_to_playlist";
+export declare const ENDPOINT_NEXT = "https://www.youtube.com/youtubei/v1/next";
+export declare const ENDPOINT_COMMENT_ACTION = "https://www.youtube.com/youtubei/v1/comment/perform_comment_action";

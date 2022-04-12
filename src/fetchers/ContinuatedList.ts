@@ -1,19 +1,17 @@
-import { Channel } from "diagnostics_channel";
 import helpers from "./helpers";
 import { WrappedHTTPClient } from "../WrappedHTTPClient";
-import { HTTPRequestMethod, HTTPRequestOptions } from "../interfaces/HTTPClient";
-import { Playlist } from "../interfaces/Playlist";
-import { Video } from "../interfaces/Video";
+import { HTTPRequestOptions } from "../interfaces/HTTPClient";
+import { Video, Channel, Playlist, Comment, CommentThread } from "../main";
 
 export class ContinuatedList {
 
-    results: Array<Video | Channel | Playlist>;
+    results: Array<Video | Channel | Playlist | Comment | CommentThread>;
     endReached = false;
 
     #requestOptions: HTTPRequestOptions;
     #httpclient: WrappedHTTPClient;
     #dataprocessor: Function;
-    #continuationToken = "";
+    continuationToken = "";
     onlyContinuation = false;
 
     constructor(requestOptions: HTTPRequestOptions, dataprocessor: Function, httpclient : WrappedHTTPClient, onlyContinuation?:boolean) {
@@ -27,10 +25,11 @@ export class ContinuatedList {
     async loadFurhter() {
         if(this.endReached) return [];
         var joinedData = this.#requestOptions.data;
-        if(this.#continuationToken != "") {
-            joinedData.continuation = this.#continuationToken;
-            if(this.onlyContinuation) {
-                delete joinedData["browseId"];
+        if(!joinedData) joinedData = {};
+        if(this.continuationToken != "") {
+            joinedData.continuation = this.continuationToken;
+            if(this.onlyContinuation) joinedData = {
+                continuation: this.continuationToken
             }
         }
 
@@ -44,7 +43,7 @@ export class ContinuatedList {
         const resJSON = await JSON.parse(res.data);
 
         const continuationCommand = helpers.recursiveSearchForKey("continuationCommand", resJSON)[0];
-        if(continuationCommand) this.#continuationToken = continuationCommand.token;
+        if(continuationCommand) this.continuationToken = continuationCommand.token;
         else this.endReached = true;
 
         let items = await this.#dataprocessor(resJSON);
@@ -53,8 +52,27 @@ export class ContinuatedList {
         return items;
     }
 
-    getByType(type: typeof Video | typeof Playlist | typeof Channel) {
-        const refactoredType:any = type;
-        return this.results.filter((elem) => { return elem instanceof refactoredType });
+    getByType(type: any) {
+        return this.results.filter((elem) => { return elem instanceof type });
+    }
+
+    getVideos():Array<Video> {
+        return this.getByType(Video) as Array<Video>
+    }
+
+    getPlaylists():Array<Playlist> {
+        return this.getByType(Playlist) as Array<Playlist>;
+    }
+
+    getChannels():Array<Channel> {
+        return this.getByType(Channel) as Array<Channel>;
+    }
+
+    getComments():Array<Comment> {
+        return this.getByType(Comment) as Array<Comment>;
+    }
+
+    getCommentThreads():Array<CommentThread> {
+        return this.getByType(CommentThread) as Array<CommentThread>;
     }
 }

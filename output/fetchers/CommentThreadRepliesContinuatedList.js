@@ -9,32 +9,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PlaylistContinuatedList = void 0;
-const HTTPClient_1 = require("../interfaces/HTTPClient");
-const helpers_1 = require("./helpers");
+exports.CommentThreadRepliesContinuatedList = void 0;
 const constants_1 = require("../constants");
-const ContinuatedList_1 = require("./ContinuatedList");
-class PlaylistContinuatedList extends ContinuatedList_1.ContinuatedList {
-    constructor(playlistId, httpclient) {
+const HTTPClient_1 = require("../interfaces/HTTPClient");
+const main_1 = require("../main");
+const helpers_1 = require("./helpers");
+class CommentThreadRepliesContinuatedList extends main_1.ContinuatedList {
+    constructor(initialContinuationToken, httpclient) {
         super({
-            url: constants_1.ENDPOINT_BROWSE,
+            url: constants_1.ENDPOINT_NEXT,
             method: HTTPClient_1.HTTPRequestMethod.POST,
-            data: {
-                browseId: "VL" + playlistId
-            }
         }, function (resJSON) {
             return __awaiter(this, void 0, void 0, function* () {
-                const continuationItemsContainer = helpers_1.default.recursiveSearchForKey("continuationItems", resJSON)[0];
-                if (continuationItemsContainer) {
-                    return continuationItemsContainer;
-                }
-                else {
-                    let itemSectionRenderer = helpers_1.default.recursiveSearchForKey("playlistVideoListRenderer", resJSON)[0];
-                    const items = helpers_1.default.recursiveSearchForKey("contents", itemSectionRenderer)[0];
-                    return items;
-                }
+                const continuationItems = helpers_1.default.recursiveSearchForKey("continuationItems", resJSON)[0];
+                return continuationItems;
             });
-        }, httpclient, true);
+        }, httpclient, false);
+        this.continuationToken = initialContinuationToken;
     }
 }
-exports.PlaylistContinuatedList = PlaylistContinuatedList;
+exports.CommentThreadRepliesContinuatedList = CommentThreadRepliesContinuatedList;

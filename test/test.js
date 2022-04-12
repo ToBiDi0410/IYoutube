@@ -29,7 +29,7 @@ const ytClient = require("../").nodeInst;
 
     var testPlaylistVideos = testPlaylist.getContinuatedList(); //Get the Continuated List
     await testPlaylistVideos.loadFurhter(); //Load Batch of Videos into List
-    console.log(testPlaylistVideos.results.length);
+    console.log(testPlaylistVideos.length);
     await testPlaylistVideos.loadFurhter(); //Load next Batch of Videos into List
     console.log(testPlaylistVideos.results.length);
     console.log(testPlaylistVideos.endReached);
