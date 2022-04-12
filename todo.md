@@ -2,13 +2,14 @@
 
 ##### Channels:
 - [ ] Fetch all Information
-- [ ] Get Channel Playlists (custom and Uploads)
+- [X] Get Channel Uploads
 - [ ] Get Discussion Section
 
 ##### Videos:
 - [ ] Fetch all Information (Youtube Player Response)
 - [ ] Stream URL Decryption
-- [ ] Get Comment Section
+- [X] Get Comment Section
+- [X] Like and Dislike Comments
 - [ ] Write Comments
 
 ##### Playlists:
@@ -18,4 +19,4 @@
 
 General: Bugfixes, Enhancements
 
-######Please keep in mind that I'm working on this Project in my spare time!
+###### Please keep in mind that I'm working on this Project in my spare time!
