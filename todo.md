@@ -1,7 +1,7 @@
 ## Todo
 
 ##### Channels:
-- [ ] Fetch all Information
+- [X] Fetch all Information
 - [X] Get Channel Uploads
 - [ ] Get Discussion Section
 
