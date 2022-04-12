@@ -9,6 +9,7 @@ import { ContinuatedList } from "./fetchers/ContinuatedList";
 import { User } from "./fetchers/User";
 import { Playlist } from "./interfaces/Playlist";
 import { DEBUG } from "./constants";
+import { Channel } from "./main";
 
 export default class IYoutube {
 
@@ -50,6 +51,14 @@ export default class IYoutube {
         pl.playlistId = playlistId;
         await pl.loadAll();
         return pl;
+    }
+
+    async getChannel(channelId: string):Promise<Channel> {
+        this.throwErrorIfNotReady();
+        var ch = new Channel(this.wrappedHttpClient);
+        ch.channelId = channelId;
+        await ch.loadAll();
+        return ch;
     }
 
     getExplorer():Explorer {

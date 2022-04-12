@@ -1,11 +1,12 @@
 {
     "name": "iyoutube",
-    "version": "0.0.14",
+    "version": "0.0.15",
     "description": "The ultimate unofficial YouTube API Client for Javascript",
     "main": "output/main.js",
     "types": "output/main.d.ts",
     "scripts": {
         "test": "npm run compile && node test/test.js",
+        "testignored": "npm run compile && node test/testIgnored.js",
         "compile": "tsc",
         "simplepublish": "npm version patch -m 'Fix' && npm publish --access=public ./ && git push"
     },

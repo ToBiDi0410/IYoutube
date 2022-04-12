@@ -28,6 +28,7 @@ const Explorer_1 = require("./fetchers/Explorer");
 const User_1 = require("./fetchers/User");
 const Playlist_1 = require("./interfaces/Playlist");
 const constants_1 = require("./constants");
+const main_1 = require("./main");
 class IYoutube {
     constructor(httpClient, storageAdapater) {
         _IYoutube_explorer.set(this, void 0);
@@ -61,6 +62,15 @@ class IYoutube {
             pl.playlistId = playlistId;
             yield pl.loadAll();
             return pl;
+        });
+    }
+    getChannel(channelId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.throwErrorIfNotReady();
+            var ch = new main_1.Channel(this.wrappedHttpClient);
+            ch.channelId = channelId;
+            yield ch.loadAll();
+            return ch;
         });
     }
     getExplorer() {

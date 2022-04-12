@@ -74,6 +74,11 @@ function processRendererItems(arr, httpclient) {
             channel.fromChannelRenderer(elem.channelRenderer);
             return channel;
         }
+        else if (elem.gridChannelRenderer) {
+            var channel = new Channel_1.Channel(httpclient);
+            channel.fromGridChannelRenderer(elem.gridChannelRenderer);
+            return channel;
+        }
         else if (elem.playlistRenderer) {
             var playlist = new Playlist_1.Playlist(httpclient);
             playlist.fromPlaylistRenderer(elem.playlistRenderer);

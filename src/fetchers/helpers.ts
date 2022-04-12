@@ -78,6 +78,10 @@ function processRendererItems(arr : Array<any>, httpclient: WrappedHTTPClient) {
             var channel = new Channel(httpclient);
             channel.fromChannelRenderer(elem.channelRenderer);
             return channel;
+        } else if(elem.gridChannelRenderer) {
+            var channel = new Channel(httpclient);
+            channel.fromGridChannelRenderer(elem.gridChannelRenderer);
+            return channel;
         }
         
         /* Playlist */

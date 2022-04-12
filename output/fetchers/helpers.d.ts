@@ -5,7 +5,7 @@ import { WrappedHTTPClient } from "../WrappedHTTPClient";
 declare function recursiveSearchForPair(searchKey: string, obj: any): any[];
 declare function recursiveSearchForKey(searchKey: string, obj: any): any[];
 declare function getNumberFromText(str: string): number;
-declare function processRendererItems(arr: Array<any>, httpclient: WrappedHTTPClient): (Channel | Video | Playlist | undefined)[];
+declare function processRendererItems(arr: Array<any>, httpclient: WrappedHTTPClient): (Video | Channel | Playlist | undefined)[];
 declare const _default: {
     recursiveSearchForPair: typeof recursiveSearchForPair;
     recursiveSearchForKey: typeof recursiveSearchForKey;

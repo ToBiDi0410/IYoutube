@@ -11,5 +11,5 @@ export declare class ContinuatedList {
     onlyContinuation: boolean;
     constructor(requestOptions: HTTPRequestOptions, dataprocessor: Function, httpclient: WrappedHTTPClient, onlyContinuation?: boolean);
     loadFurhter(): Promise<any>;
-    getByType(type: typeof Video | typeof Playlist | typeof Channel): (Video | Channel | Playlist)[];
+    getByType(type: typeof Video | typeof Playlist | typeof Channel): (Video | Playlist | Channel)[];
 }

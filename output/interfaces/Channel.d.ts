@@ -1,16 +1,27 @@
 import { WrappedHTTPClient } from "../WrappedHTTPClient";
 import { ChannelBadge } from "./ChannelBadge";
 import { Thumbnail } from "./Thumbnail";
+import { ChannelLink } from "./ChannelLink";
+import { ContinuatedList } from "../main";
 export declare class Channel {
     #private;
     channelId?: string;
     title?: string;
+    description?: string;
     shortDescription?: string;
     badges?: Array<ChannelBadge>;
     thumbnails?: Array<Thumbnail>;
+    banners?: Array<Thumbnail>;
+    mobileBanners?: Array<Thumbnail>;
+    tvBanners?: Array<Thumbnail>;
     videoCount?: number;
     subscribed?: boolean;
     subscriberCount?: number;
+    country?: string;
+    viewCount?: number;
+    joinDate?: Date;
+    channelLinks?: Array<ChannelLink>;
+    otherChannels?: Array<Channel>;
     httpclient: WrappedHTTPClient;
     constructor(httpclient: WrappedHTTPClient);
     fromVideoRenderer(obj: any): void;
@@ -19,6 +30,11 @@ export declare class Channel {
     fromPlaylistRenderer(obj: any): void;
     fromVideoOwnerRenderer(obj: any): void;
     fromPlaylistVideoRendererBylineText(obj: any): void;
+    fromGridChannelRenderer(obj: any): void;
+    loadAll(): Promise<void>;
+    loadDetailsFromAboutPage(): Promise<void>;
+    loadDetailsFromChannelsPages(): Promise<void>;
+    getUploadList(): ContinuatedList;
     subscribe(): Promise<boolean>;
     unsubscribe(): Promise<boolean>;
 }
