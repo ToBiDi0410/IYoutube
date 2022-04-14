@@ -1,5 +1,5 @@
 /* Import Library */
-const iyoutube = require("../");
+const iyoutube = require("iyoutube");
 
 //OR ESM:
 //import * as iyoutube from 'iyoutube';
