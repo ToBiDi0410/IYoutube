@@ -132,7 +132,7 @@ export class Video {
         const videoDetails = helpers.recursiveSearchForKey("videoDetails", playerJSON)[0];
         if(videoDetails) {
             this.title = videoDetails.title;
-            this.shortDescription = videoDetails.shortDescription;
+            this.description = videoDetails.shortDescription;
             this.thumbnails = helpers.recursiveSearchForKey("thumbnails", videoDetails)[0];
             this.viewCount = helpers.getNumberFromText(videoDetails.viewCount);
             this.private = videoDetails.isPrivate;
@@ -201,6 +201,21 @@ export class Video {
                     this.hasLiked = likeButton.isToggled && !dislikeButton.isToggled;
             }
         }
+
+        const secondaryInfoRenderer = helpers.recursiveSearchForKey("videoSecondaryInfoRenderer", nextJSON)[0];
+        if(secondaryInfoRenderer) {
+            const descriptionContainer = secondaryInfoRenderer.description;
+            if(descriptionContainer)
+                this.description = helpers.recursiveSearchForKey("text", descriptionContainer).join("");
+            
+            const ownerContainer = secondaryInfoRenderer.owner;
+            if(ownerContainer) {
+                this.owner = new Channel(this.httpclient);
+                this.owner.fromVideoOwnerRenderer(helpers.recursiveSearchForKey("videoOwnerRenderer", ownerContainer));
+                this.owner.subscribed = helpers.recursiveSearchForKey("subscribed", nextJSON)[0];
+            }
+        }
+        //TODO: Video Formats
     }
 
     async getCommentThreadList():Promise<ContinuatedList | undefined> {

@@ -95,7 +95,7 @@ class Video {
             const videoDetails = helpers_1.default.recursiveSearchForKey("videoDetails", playerJSON)[0];
             if (videoDetails) {
                 this.title = videoDetails.title;
-                this.shortDescription = videoDetails.shortDescription;
+                this.description = videoDetails.shortDescription;
                 this.thumbnails = helpers_1.default.recursiveSearchForKey("thumbnails", videoDetails)[0];
                 this.viewCount = helpers_1.default.getNumberFromText(videoDetails.viewCount);
                 this.private = videoDetails.isPrivate;
@@ -153,8 +153,18 @@ class Video {
                     const dislikeButton = buttons[1].toggleButtonRenderer;
                     if (likeButton && dislikeButton)
                         this.hasLiked = likeButton.isToggled && !dislikeButton.isToggled;
-                    if (!likeButton.isToggled && !dislikeButton.isToggled)
-                        this.hasLiked = undefined;
+                }
+            }
+            const secondaryInfoRenderer = helpers_1.default.recursiveSearchForKey("videoSecondaryInfoRenderer", nextJSON)[0];
+            if (secondaryInfoRenderer) {
+                const descriptionContainer = secondaryInfoRenderer.description;
+                if (descriptionContainer)
+                    this.description = helpers_1.default.recursiveSearchForKey("text", descriptionContainer).join("");
+                const ownerContainer = secondaryInfoRenderer.owner;
+                if (ownerContainer) {
+                    this.owner = new main_1.Channel(this.httpclient);
+                    this.owner.fromVideoOwnerRenderer(helpers_1.default.recursiveSearchForKey("videoOwnerRenderer", ownerContainer));
+                    this.owner.subscribed = helpers_1.default.recursiveSearchForKey("subscribed", nextJSON)[0];
                 }
             }
             console.log(this);
