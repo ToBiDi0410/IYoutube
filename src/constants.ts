@@ -64,3 +64,4 @@ export const ENDPOINT_ADDTOPLAYLIST = "https://www.youtube.com/youtubei/v1/playl
 export const ENDPOINT_NEXT = "https://www.youtube.com/youtubei/v1/next";
 export const ENDPOINT_COMMENT_ACTION = "https://www.youtube.com/youtubei/v1/comment/perform_comment_action";
 export const ENDPOINT_PLAYER = "https://www.youtube.com/youtubei/v1/player";
+export const ENDPOINT_COMMENT_CREATE = "https://www.youtube.com/youtubei/v1/comment/create_comment";

@@ -1,4 +1,4 @@
-import { CommentSectionContinuatedList, ContinuatedList, WrappedHTTPClient, Channel, Thumbnail, CaptionTrack } from "../main";
+import { CommentSectionContinuatedList, ContinuatedList, WrappedHTTPClient, Channel, Thumbnail, CaptionTrack, CommentThread } from "../main";
 export declare class Video {
     videoId?: any;
     title?: string;
@@ -32,4 +32,5 @@ export declare class Video {
     like(): Promise<boolean>;
     dislike(): Promise<boolean>;
     removeLike(): Promise<boolean>;
+    comment(text: string): Promise<CommentThread>;
 }

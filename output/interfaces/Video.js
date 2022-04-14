@@ -167,7 +167,6 @@ class Video {
                     this.owner.subscribed = helpers_1.default.recursiveSearchForKey("subscribed", nextJSON)[0];
                 }
             }
-            console.log(this);
         });
     }
     getCommentThreadList() {
@@ -229,6 +228,31 @@ class Video {
             });
             this.hasLiked = res.status == 200 ? undefined : this.hasLiked;
             return res.status == 200;
+        });
+    }
+    comment(text) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var commentParams = atob(decodeURIComponent("EgtQSGdjOFE2cVRqYyoCCABQBw%3D%3D"));
+            commentParams = commentParams.replace("PHgc8Q6qTjc", this.videoId);
+            commentParams = encodeURIComponent(btoa(commentParams));
+            const res = yield this.httpclient.request({
+                method: HTTPClient_1.HTTPRequestMethod.POST,
+                url: constants_1.ENDPOINT_COMMENT_CREATE,
+                data: {
+                    commentText: text,
+                    createCommentParams: commentParams
+                }
+            });
+            const resJSON = JSON.parse(res.data);
+            const commentThreadRenderer = helpers_1.default.recursiveSearchForKey("commentThreadRenderer", resJSON)[0];
+            if (commentThreadRenderer) {
+                var cmd = new main_1.CommentThread(this.httpclient);
+                cmd.fromCommentThreadRenderer(commentThreadRenderer);
+                return cmd;
+            }
+            else {
+                throw new Error("Failed to create Comment on Video");
+            }
         });
     }
 }

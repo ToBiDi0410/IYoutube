@@ -6,17 +6,20 @@
 - [ ] Get Discussion Section
 
 ##### Videos:
-- [ ] Fetch all Information (Youtube Player Response)
-- [ ] Stream URL Decryption
+- [X] Fetch all Information (Youtube Player Response)
+- [ ] Stream URL Decryption & Video Formats
 - [X] Get Comment Section
 - [X] Like and Dislike Comments
-- [ ] Write Comments
+- [X] Write Comments on Video
+- [ ] Delete own Comments
+- [ ] Write Comments on Comment Threads
 
 ##### Playlists:
 - [ ] Add & Remove Videos
 - [ ] Create & Delete
 - [ ] Change Order
 
-General: Bugfixes, Enhancements
+
+General: Documentation, Bugfixes, Enhancements
 
 ###### Please keep in mind that I'm working on this Project in my spare time!

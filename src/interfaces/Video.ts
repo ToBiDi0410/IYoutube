@@ -1,6 +1,6 @@
-import { ENDPOINT_DISLIKE, ENDPOINT_LIKE, ENDPOINT_NEXT, ENDPOINT_PLAYER, ENDPOINT_REMOVELIKE } from "../constants";
+import { ENDPOINT_COMMENT_CREATE, ENDPOINT_DISLIKE, ENDPOINT_LIKE, ENDPOINT_NEXT, ENDPOINT_PLAYER, ENDPOINT_REMOVELIKE } from "../constants";
 import helpers from "../fetchers/helpers";
-import { CommentSectionContinuatedList, ContinuatedList, WrappedHTTPClient, Channel, Thumbnail, CaptionTrack } from "../main";
+import { CommentSectionContinuatedList, ContinuatedList, WrappedHTTPClient, Channel, Thumbnail, CaptionTrack, CommentThread } from "../main";
 import { HTTPRequestMethod } from "./HTTPClient";
 
 export class Video {
@@ -269,5 +269,29 @@ export class Video {
         });
         this.hasLiked = res.status == 200 ? undefined : this.hasLiked;
         return res.status == 200;
+    }
+
+    async comment(text: string):Promise<CommentThread> {
+        var commentParams = atob(decodeURIComponent("EgtQSGdjOFE2cVRqYyoCCABQBw%3D%3D"));
+        commentParams = commentParams.replace("PHgc8Q6qTjc", this.videoId);
+        commentParams = encodeURIComponent(btoa(commentParams));
+        const res = await this.httpclient.request({
+            method: HTTPRequestMethod.POST,
+            url: ENDPOINT_COMMENT_CREATE,
+            data: {
+                commentText: text,
+                createCommentParams: commentParams
+            }
+        });
+        const resJSON = JSON.parse(res.data);
+
+        const commentThreadRenderer = helpers.recursiveSearchForKey("commentThreadRenderer", resJSON)[0];
+        if(commentThreadRenderer) {
+            var cmd = new CommentThread(this.httpclient);
+            cmd.fromCommentThreadRenderer(commentThreadRenderer);
+            return cmd;
+        } else {
+            throw new Error("Failed to create Comment on Video");
+        }
     }
 }
