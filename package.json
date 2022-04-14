@@ -10,7 +10,30 @@
         "compile": "tsc",
         "simplepublish": "npm version patch -m 'Fix' && npm publish --access=public ./ && git push"
     },
-    "keywords": [],
+    "keywords": [
+        "youtube",
+        "yt",
+        "youtubeapi",
+        "youtube-api",
+        "innertube",
+        "innertubeapi",
+        "inntertube-api",
+        "youtubei",
+        "iyoutube",
+        "googleapi",
+        "google-api",
+        "api",
+        "ytlike",
+        "like",
+        "ytdislike",
+        "dislike",
+        "ytcomment",
+        "comment",
+        "ytsearch",
+        "search",
+        "unofficial",
+        "dirty"
+    ],
     "author": "",
     "license": "ISC",
     "dependencies": {
@@ -24,5 +47,5 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/ToBiDi0410/IYoutube"
-    }
+    },
 }
