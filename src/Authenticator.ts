@@ -25,9 +25,9 @@ export class Authenticator {
     async init() {
         if(DEBUG) console.log(CONSOLE_COLORS.fg.cyan + "[AUTHENTICATOR] Initializing Authenticator...", CONSOLE_COLORS.reset);
 
-        if(this.storageAdapter.exists(TOKEN_FILE)) {
+        if((await this.storageAdapter.exists(TOKEN_FILE))) {
             if(DEBUG) console.log(CONSOLE_COLORS.fg.magenta + "[AUTHENTICATOR] Found Token File in Storage, reading it...", CONSOLE_COLORS.reset);
-            var str = this.storageAdapter.get(TOKEN_FILE);
+            var str = await this.storageAdapter.get(TOKEN_FILE);
             if(str) {
                 this.#token = JSON.parse(str);
                 if(DEBUG) console.log(CONSOLE_COLORS.bright + CONSOLE_COLORS.fg.green + "[AUTHENTICATOR] Now using Token from Storage (expires: " + new Date(this.#token.expireDate).toLocaleString() + ")", CONSOLE_COLORS.reset);

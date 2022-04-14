@@ -14,7 +14,7 @@ export class NodeFSStorageAdapater implements StorageAdapter {
         fs.mkdirSync(basePath, { recursive: true });
     }
 
-    set(paths: string, value: string): boolean {
+    async set(paths: string, value: string) {
         try {
             fs.writeFileSync(path.join(this.basePath, paths), value, { encoding: 'utf-8' });
             return true;
@@ -23,11 +23,11 @@ export class NodeFSStorageAdapater implements StorageAdapter {
         }
     }
 
-    get(paths: string): string {
+    async get(paths: string) {
         return fs.readFileSync(path.join(this.basePath, paths), { encoding: 'utf-8' }).toString();
     }
 
-    exists(paths: string): boolean {
+    async exists(paths: string) {
         return fs.existsSync(path.join(this.basePath, paths));
     }
     

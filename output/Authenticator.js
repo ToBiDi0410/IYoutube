@@ -41,10 +41,10 @@ class Authenticator {
         return __awaiter(this, void 0, void 0, function* () {
             if (constants_1.DEBUG)
                 console.log(constants_1.CONSOLE_COLORS.fg.cyan + "[AUTHENTICATOR] Initializing Authenticator...", constants_1.CONSOLE_COLORS.reset);
-            if (this.storageAdapter.exists(TOKEN_FILE)) {
+            if ((yield this.storageAdapter.exists(TOKEN_FILE))) {
                 if (constants_1.DEBUG)
                     console.log(constants_1.CONSOLE_COLORS.fg.magenta + "[AUTHENTICATOR] Found Token File in Storage, reading it...", constants_1.CONSOLE_COLORS.reset);
-                var str = this.storageAdapter.get(TOKEN_FILE);
+                var str = yield this.storageAdapter.get(TOKEN_FILE);
                 if (str) {
                     __classPrivateFieldSet(this, _Authenticator_token, JSON.parse(str), "f");
                     if (constants_1.DEBUG)
