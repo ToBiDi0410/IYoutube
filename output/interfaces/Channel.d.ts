@@ -29,6 +29,7 @@ export declare class Channel {
     fromPlaylistVideoRendererBylineText(obj: any): void;
     fromGridChannelRenderer(obj: any): void;
     fromCommentRenderer(obj: any): void;
+    fromPlayerMicroRenderer(obj: any): void;
     loadAll(): Promise<void>;
     loadDetailsFromAboutPage(): Promise<void>;
     loadDetailsFromChannelsPages(): Promise<void>;

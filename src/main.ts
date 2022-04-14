@@ -16,6 +16,7 @@ import { Comment } from "./interfaces/Comment";
 import { CommentThread } from "./interfaces/CommentThread";
 import { WrappedHTTPClient } from "./WrappedHTTPClient";
 import { CommentThreadRepliesContinuatedList } from "./fetchers/CommentThreadRepliesContinuatedList";
+import { CaptionTrack } from "./interfaces/CaptionTrack";
 import { default as IYoutube } from "./Iyoutube";
 
 
@@ -40,6 +41,7 @@ export { CommentSectionContinuatedList as CommentSectionContinuatedList }
 export { Comment as Comment }
 export { CommentThread as CommentThread }
 export { CommentThreadRepliesContinuatedList as CommentThreadRepliesContinuatedList }
+export { CaptionTrack as CaptionTrack }
 
 //Default Export for most NodeJS
 import * as path from 'path';

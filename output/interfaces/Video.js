@@ -67,15 +67,113 @@ class Video {
         }
         this.playable = helpers_1.default.recursiveSearchForKey("isPlayable", obj)[0];
     }
+    loadAll() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const playerResponse = yield this.httpclient.request({
+                method: HTTPClient_1.HTTPRequestMethod.POST,
+                url: constants_1.ENDPOINT_PLAYER,
+                data: {
+                    videoId: this.videoId,
+                    racyCheckOk: false,
+                    contentCheckOk: false,
+                    playbackContext: {
+                        contentPlaybackContent: {
+                            currentUrl: "/watch?v=6Dh-RL__uN4",
+                            autonavState: "STATE_OFF",
+                            autoCaptionsDefaultOn: false,
+                            html5Preference: "HTML5_PREF_WANTS",
+                            lactMilliseconds: "-1",
+                            referer: "https://www.youtube.com/",
+                            signatureTimestamp: 19095,
+                            splay: false,
+                            vis: 0
+                        }
+                    }
+                }
+            });
+            const playerJSON = yield JSON.parse(playerResponse.data);
+            const videoDetails = helpers_1.default.recursiveSearchForKey("videoDetails", playerJSON)[0];
+            if (videoDetails) {
+                this.title = videoDetails.title;
+                this.shortDescription = videoDetails.shortDescription;
+                this.thumbnails = helpers_1.default.recursiveSearchForKey("thumbnails", videoDetails)[0];
+                this.viewCount = helpers_1.default.getNumberFromText(videoDetails.viewCount);
+                this.private = videoDetails.isPrivate;
+                this.live = videoDetails.isLiveContent;
+                this.keywords = videoDetails.keywords;
+                this.currentUserIsOwner = videoDetails.isOwnerViewing;
+                this.canLike = videoDetails.allowRatings;
+            }
+            const playerMicroRenderer = helpers_1.default.recursiveSearchForKey("playerMicroformatRenderer", playerJSON)[0];
+            if (playerMicroRenderer) {
+                this.publishedText = playerMicroRenderer.publishDate;
+                this.listed = !playerMicroRenderer.isUnlisted;
+                this.familySafe = playerMicroRenderer.isFamilySafe;
+                this.owner = new main_1.Channel(this.httpclient);
+                this.owner.fromPlayerMicroRenderer(playerMicroRenderer);
+            }
+            const captions = helpers_1.default.recursiveSearchForKey("captionTracks", playerJSON)[0];
+            if (captions) {
+                this.captionTracks = captions.map((a) => {
+                    a.name = helpers_1.default.recursiveSearchForKey("simpleText", a.name).join("");
+                    return a;
+                });
+            }
+            const nextResponse = yield this.httpclient.request({
+                method: HTTPClient_1.HTTPRequestMethod.POST,
+                url: constants_1.ENDPOINT_NEXT,
+                data: {
+                    autonavState: "STATE_ON",
+                    captionsRequested: true,
+                    contentCheckOK: false,
+                    params: "OALAAQHCAwtPUEhMX09MVzNkUQ%3D%3D",
+                    racyCheckOk: false,
+                    videoId: this.videoId,
+                }
+            });
+            const nextJSON = yield JSON.parse(nextResponse.data);
+            const itemSectionRenderers = helpers_1.default.recursiveSearchForKey("itemSectionRenderer", nextJSON);
+            const commentSectionRenderer = itemSectionRenderers.find((a) => a.targetId == 'comments-section');
+            if (commentSectionRenderer)
+                this.commentThreadList = new main_1.CommentSectionContinuatedList(helpers_1.default.recursiveSearchForKey("token", commentSectionRenderer)[0], this.httpclient);
+            const primaryInfoRenderer = helpers_1.default.recursiveSearchForKey("videoPrimaryInfoRenderer", nextJSON)[0];
+            if (primaryInfoRenderer) {
+                const titleContainer = primaryInfoRenderer.title;
+                if (titleContainer)
+                    this.title = helpers_1.default.recursiveSearchForKey("text", titleContainer).join();
+                const viewCountContainer = helpers_1.default.recursiveSearchForKey("viewCount", nextJSON)[0];
+                if (viewCountContainer)
+                    this.viewCount = helpers_1.default.getNumberFromText(helpers_1.default.recursiveSearchForKey("simpleText", viewCountContainer).join(""));
+                const dateContainer = helpers_1.default.recursiveSearchForKey("dateText", nextJSON)[0];
+                if (dateContainer)
+                    this.publishedDate = new Date(helpers_1.default.recursiveSearchForKey("simpleText", dateContainer).join(""));
+                const buttons = helpers_1.default.recursiveSearchForKey("topLevelButtons", nextJSON)[0];
+                if (buttons) {
+                    const likeButton = buttons[0].toggleButtonRenderer;
+                    const dislikeButton = buttons[1].toggleButtonRenderer;
+                    if (likeButton && dislikeButton)
+                        this.hasLiked = likeButton.isToggled && !dislikeButton.isToggled;
+                    if (!likeButton.isToggled && !dislikeButton.isToggled)
+                        this.hasLiked = undefined;
+                }
+            }
+            console.log(this);
+        });
+    }
     getCommentThreadList() {
         return __awaiter(this, void 0, void 0, function* () {
-            var list = new main_1.CommentSectionContinuatedList(this.videoId, this.httpclient);
-            yield list.loadFurhter();
-            return list;
+            if (!this.commentThreadList) {
+                yield this.loadAll();
+                if (!this.commentThreadList)
+                    throw new Error("This Video seems to have no comment section");
+            }
+            return this.commentThreadList;
         });
     }
     like() {
         return __awaiter(this, void 0, void 0, function* () {
+            if (this.canLike === false)
+                throw new Error("This Video has disabled Like-Actions");
             const res = yield this.httpclient.request({
                 method: HTTPClient_1.HTTPRequestMethod.POST,
                 url: constants_1.ENDPOINT_LIKE,
@@ -85,12 +183,14 @@ class Video {
                     }
                 }
             });
-            const resJSON = yield JSON.parse(res.data);
+            this.hasLiked = res.status == 200 ? true : this.hasLiked;
             return res.status == 200;
         });
     }
     dislike() {
         return __awaiter(this, void 0, void 0, function* () {
+            if (this.canLike === false)
+                throw new Error("This Video has disabled Like-Actions");
             const res = yield this.httpclient.request({
                 method: HTTPClient_1.HTTPRequestMethod.POST,
                 url: constants_1.ENDPOINT_DISLIKE,
@@ -100,12 +200,14 @@ class Video {
                     }
                 }
             });
-            const resJSON = yield JSON.parse(res.data);
+            this.hasLiked = res.status == 200 ? false : this.hasLiked;
             return res.status == 200;
         });
     }
     removeLike() {
         return __awaiter(this, void 0, void 0, function* () {
+            if (this.canLike === false)
+                throw new Error("This Video has disabled Like-Actions");
             const res = yield this.httpclient.request({
                 method: HTTPClient_1.HTTPRequestMethod.POST,
                 url: constants_1.ENDPOINT_REMOVELIKE,
@@ -115,7 +217,7 @@ class Video {
                     }
                 }
             });
-            const resJSON = yield JSON.parse(res.data);
+            this.hasLiked = res.status == 200 ? undefined : this.hasLiked;
             return res.status == 200;
         });
     }

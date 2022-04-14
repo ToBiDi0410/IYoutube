@@ -73,6 +73,15 @@ class IYoutube {
             return ch;
         });
     }
+    getVideo(videoId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.throwErrorIfNotReady();
+            var v = new main_1.Video(this.wrappedHttpClient);
+            v.videoId = videoId;
+            yield v.loadAll();
+            return v;
+        });
+    }
     getExplorer() {
         return __classPrivateFieldGet(this, _IYoutube_explorer, "f");
     }

@@ -123,6 +123,10 @@ class Channel {
         if (authorThumbnailContainer)
             this.thumbnails = helpers_1.default.recursiveSearchForKey("thumbnails", authorThumbnailContainer)[0];
     }
+    fromPlayerMicroRenderer(obj) {
+        this.channelId = obj.externalChannelId;
+        this.title = obj.ownerChannelName;
+    }
     loadAll() {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.loadDetailsFromAboutPage();

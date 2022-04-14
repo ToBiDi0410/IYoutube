@@ -7,7 +7,7 @@ import { Explorer } from "./fetchers/Explorer";
 import { ContinuatedList } from "./fetchers/ContinuatedList";
 import { User } from "./fetchers/User";
 import { Playlist } from "./interfaces/Playlist";
-import { Channel } from "./main";
+import { Channel, Video } from "./main";
 export default class IYoutube {
     #private;
     rawHttpClient: HTTPClient;
@@ -19,6 +19,7 @@ export default class IYoutube {
     search(term: string, type: SearchType): Promise<ContinuatedList>;
     getPlaylist(playlistId: string): Promise<Playlist>;
     getChannel(channelId: string): Promise<Channel>;
+    getVideo(videoId: string): Promise<Video>;
     getExplorer(): Explorer;
     getUser(): User;
     throwErrorIfNotReady(): void;

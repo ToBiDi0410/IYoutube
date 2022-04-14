@@ -155,6 +155,11 @@ export class Channel {
             this.thumbnails = helpers.recursiveSearchForKey("thumbnails", authorThumbnailContainer)[0];
     }
 
+    fromPlayerMicroRenderer(obj: any) {
+        this.channelId = obj.externalChannelId;
+        this.title = obj.ownerChannelName;
+    }
+
     async loadAll() {
         await this.loadDetailsFromAboutPage();
         await this.loadDetailsFromChannelsPages();

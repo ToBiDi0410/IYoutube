@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ENDPOINT_COMMENT_ACTION = exports.ENDPOINT_NEXT = exports.ENDPOINT_ADDTOPLAYLIST = exports.ENDPOINT_UNSUBSCRIBE = exports.ENDPOINT_SUBSCRIBE = exports.ENDPOINT_REMOVELIKE = exports.ENDPOINT_DISLIKE = exports.ENDPOINT_LIKE = exports.ENDPOINT_SEARCH = exports.ENDPOINT_BROWSE = exports.CONSOLE_COLORS = exports.DEFAULT_CONTEXT = exports.DEFAULT_USER_AGENT = exports.DEFAULT_CLIENT_NAME = exports.DEFAULT_CLIENT_VERSION = exports.DEFAULT_API_KEY = exports.DEBUG = void 0;
+exports.ENDPOINT_PLAYER = exports.ENDPOINT_COMMENT_ACTION = exports.ENDPOINT_NEXT = exports.ENDPOINT_ADDTOPLAYLIST = exports.ENDPOINT_UNSUBSCRIBE = exports.ENDPOINT_SUBSCRIBE = exports.ENDPOINT_REMOVELIKE = exports.ENDPOINT_DISLIKE = exports.ENDPOINT_LIKE = exports.ENDPOINT_SEARCH = exports.ENDPOINT_BROWSE = exports.CONSOLE_COLORS = exports.DEFAULT_CONTEXT = exports.DEFAULT_USER_AGENT = exports.DEFAULT_CLIENT_NAME = exports.DEFAULT_CLIENT_VERSION = exports.DEFAULT_API_KEY = exports.DEBUG = void 0;
 exports.DEBUG = false;
 exports.DEFAULT_API_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
 exports.DEFAULT_CLIENT_VERSION = "2.20220406.09.00";
@@ -62,3 +62,4 @@ exports.ENDPOINT_UNSUBSCRIBE = "https://www.youtube.com/youtubei/v1/subscription
 exports.ENDPOINT_ADDTOPLAYLIST = "https://www.youtube.com/youtubei/v1/playlist/get_add_to_playlist";
 exports.ENDPOINT_NEXT = "https://www.youtube.com/youtubei/v1/next";
 exports.ENDPOINT_COMMENT_ACTION = "https://www.youtube.com/youtubei/v1/comment/perform_comment_action";
+exports.ENDPOINT_PLAYER = "https://www.youtube.com/youtubei/v1/player";

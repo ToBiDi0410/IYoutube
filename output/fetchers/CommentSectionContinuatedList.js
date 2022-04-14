@@ -15,28 +15,17 @@ const HTTPClient_1 = require("../interfaces/HTTPClient");
 const ContinuatedList_1 = require("./ContinuatedList");
 const helpers_1 = require("./helpers");
 class CommentSectionContinuatedList extends ContinuatedList_1.ContinuatedList {
-    constructor(videoId, httpclient) {
+    constructor(initialContinuationToken, httpclient) {
         super({
             url: constants_1.ENDPOINT_NEXT,
             method: HTTPClient_1.HTTPRequestMethod.POST,
-            data: {
-                autonavState: "STATE_ON",
-                captionsRequested: true,
-                contentCheckOK: false,
-                params: "OALAAQHCAwtPUEhMX09MVzNkUQ%3D%3D",
-                racyCheckOk: false,
-                videoId: videoId,
-            }
         }, function (resJSON) {
             return __awaiter(this, void 0, void 0, function* () {
-                const itemSectionRenderers = helpers_1.default.recursiveSearchForKey("itemSectionRenderer", resJSON);
-                const commentSectionRenderer = itemSectionRenderers.find((a) => a.targetId == 'comments-section');
-                if (commentSectionRenderer)
-                    return [];
                 const continuationItems = helpers_1.default.recursiveSearchForKey("continuationItems", resJSON)[1];
                 return continuationItems;
             });
         }, httpclient, false);
+        this.continuationToken = initialContinuationToken;
     }
 }
 exports.CommentSectionContinuatedList = CommentSectionContinuatedList;

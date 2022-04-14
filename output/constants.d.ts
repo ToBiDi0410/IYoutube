@@ -59,3 +59,4 @@ export declare const ENDPOINT_UNSUBSCRIBE = "https://www.youtube.com/youtubei/v1
 export declare const ENDPOINT_ADDTOPLAYLIST = "https://www.youtube.com/youtubei/v1/playlist/get_add_to_playlist";
 export declare const ENDPOINT_NEXT = "https://www.youtube.com/youtubei/v1/next";
 export declare const ENDPOINT_COMMENT_ACTION = "https://www.youtube.com/youtubei/v1/comment/perform_comment_action";
+export declare const ENDPOINT_PLAYER = "https://www.youtube.com/youtubei/v1/player";

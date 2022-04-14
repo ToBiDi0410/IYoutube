@@ -9,7 +9,7 @@ import { ContinuatedList } from "./fetchers/ContinuatedList";
 import { User } from "./fetchers/User";
 import { Playlist } from "./interfaces/Playlist";
 import { DEBUG } from "./constants";
-import { Channel } from "./main";
+import { Channel, Video } from "./main";
 
 export default class IYoutube {
 
@@ -59,6 +59,14 @@ export default class IYoutube {
         ch.channelId = channelId;
         await ch.loadAll();
         return ch;
+    }
+
+    async getVideo(videoId: string):Promise<Video> {
+        this.throwErrorIfNotReady();
+        var v = new Video(this.wrappedHttpClient);
+        v.videoId = videoId;
+        await v.loadAll();
+        return v;
     }
 
     getExplorer():Explorer {
