@@ -1,10 +1,13 @@
-//Import the nodeInst Export of IYoutube
-//This export is already filled with an Storage Adapter and HTTPClient
-//If you just want to use this Library generally with NodeJS you can ignore what this means
-const ytClient = require("../").nodeInst;
-// !IMPORTANT! You have to replace the ../ with IYoutube
+/* Import Library */
+const iyoutube = require("../");
+
+//OR ESM:
+//import * as iyoutube from 'iyoutube';
 
 (async function() {
+    //Get new Instance for Node.JS (! REQUIRES ASYNC USAGE !)
+    const ytClient = await iyoutube.nodeDefault();
+
     //Init the Client
     await ytClient.init();
 

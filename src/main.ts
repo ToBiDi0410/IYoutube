@@ -1,5 +1,3 @@
-import { NodeFetchClientAdapter } from "./adapters/NodeFetchClientAdapter";
-import { NodeFSStorageAdapater } from "./adapters/NodeFSStorageAdapter";
 import { Explorer } from "./fetchers/Explorer";
 import { ContinuatedList } from "./fetchers/ContinuatedList";
 import { User } from "./fetchers/User";
@@ -17,12 +15,10 @@ import { CommentThread } from "./interfaces/CommentThread";
 import { WrappedHTTPClient } from "./WrappedHTTPClient";
 import { CommentThreadRepliesContinuatedList } from "./fetchers/CommentThreadRepliesContinuatedList";
 import { CaptionTrack } from "./interfaces/CaptionTrack";
-import { default as IYoutube } from "./Iyoutube";
+import { default as IYoutube } from "./IYoutube";
 
 
 export { IYoutube as IYoutube }
-export { NodeFSStorageAdapater as NodeFSStorageAdapater }
-export { NodeFetchClientAdapter as NodeFetchClientAdapter } 
 export { HTTPClient as HTTPClient }
 export { StorageAdapter as StorageAdapter }
 export { WrappedHTTPClient as WrappedHTTPClient }
@@ -43,6 +39,9 @@ export { CommentThread as CommentThread }
 export { CommentThreadRepliesContinuatedList as CommentThreadRepliesContinuatedList }
 export { CaptionTrack as CaptionTrack }
 
-//Default Export for most NodeJS
-import * as path from 'path';
-export const nodeInst = new IYoutube(new NodeFetchClientAdapter() , new NodeFSStorageAdapater(path.resolve(__dirname, "../datastorage")));
+//Skips Webpack checks
+export const nodeDefault = async ():Promise<IYoutube> => {
+    const path = "./nodeDefault";
+    const res = await import(path);
+    return res.default;
+}

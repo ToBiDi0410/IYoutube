@@ -1,10 +1,15 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.nodeInst = exports.CommentThreadRepliesContinuatedList = exports.CommentThread = exports.Comment = exports.CommentSectionContinuatedList = exports.Playlist = exports.Video = exports.Channel = exports.Authenticator = exports.ContinuatedList = exports.User = exports.Explorer = exports.WrappedHTTPClient = exports.NodeFetchClientAdapter = exports.NodeFSStorageAdapater = exports.IYoutube = void 0;
-const NodeFetchClientAdapter_1 = require("./adapters/NodeFetchClientAdapter");
-Object.defineProperty(exports, "NodeFetchClientAdapter", { enumerable: true, get: function () { return NodeFetchClientAdapter_1.NodeFetchClientAdapter; } });
-const NodeFSStorageAdapter_1 = require("./adapters/NodeFSStorageAdapter");
-Object.defineProperty(exports, "NodeFSStorageAdapater", { enumerable: true, get: function () { return NodeFSStorageAdapter_1.NodeFSStorageAdapater; } });
+exports.nodeDefault = exports.CommentThreadRepliesContinuatedList = exports.CommentThread = exports.Comment = exports.CommentSectionContinuatedList = exports.Playlist = exports.Video = exports.Channel = exports.Authenticator = exports.ContinuatedList = exports.User = exports.Explorer = exports.WrappedHTTPClient = exports.IYoutube = void 0;
 const Explorer_1 = require("./fetchers/Explorer");
 Object.defineProperty(exports, "Explorer", { enumerable: true, get: function () { return Explorer_1.Explorer; } });
 const ContinuatedList_1 = require("./fetchers/ContinuatedList");
@@ -29,7 +34,11 @@ const WrappedHTTPClient_1 = require("./WrappedHTTPClient");
 Object.defineProperty(exports, "WrappedHTTPClient", { enumerable: true, get: function () { return WrappedHTTPClient_1.WrappedHTTPClient; } });
 const CommentThreadRepliesContinuatedList_1 = require("./fetchers/CommentThreadRepliesContinuatedList");
 Object.defineProperty(exports, "CommentThreadRepliesContinuatedList", { enumerable: true, get: function () { return CommentThreadRepliesContinuatedList_1.CommentThreadRepliesContinuatedList; } });
-const Iyoutube_1 = require("./Iyoutube");
-Object.defineProperty(exports, "IYoutube", { enumerable: true, get: function () { return Iyoutube_1.default; } });
-const path = require("path");
-exports.nodeInst = new Iyoutube_1.default(new NodeFetchClientAdapter_1.NodeFetchClientAdapter(), new NodeFSStorageAdapter_1.NodeFSStorageAdapater(path.resolve(__dirname, "../datastorage")));
+const IYoutube_1 = require("./IYoutube");
+Object.defineProperty(exports, "IYoutube", { enumerable: true, get: function () { return IYoutube_1.default; } });
+const nodeDefault = () => __awaiter(void 0, void 0, void 0, function* () {
+    const path = "./nodeDefault";
+    const res = yield Promise.resolve().then(() => require(path));
+    return res.default;
+});
+exports.nodeDefault = nodeDefault;
