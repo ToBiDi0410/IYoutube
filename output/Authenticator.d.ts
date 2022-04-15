@@ -1,9 +1,9 @@
 import { HTTPClient } from "./interfaces/HTTPClient";
 import { StorageAdapter } from "./interfaces/StorageAdapter";
 export declare class Authenticator {
-    #private;
     httpClient: HTTPClient;
     storageAdapter: StorageAdapter;
+    token: any;
     constructor(httpclient: HTTPClient, storage: StorageAdapter);
     init(): Promise<void>;
     requiresLogin(): boolean;

@@ -1,7 +1,6 @@
 import { PlaylistContinuatedList } from "../fetchers/PlaylistContinuatedList";
-import { Video, Thumbnail, Channel, WrappedHTTPClient } from "../main";
+import { Video, Thumbnail, ContinuatedList, Channel, WrappedHTTPClient } from "../main";
 export declare class Playlist {
-    #private;
     playlistId?: string;
     title?: string;
     description?: string;
@@ -15,6 +14,8 @@ export declare class Playlist {
     lastEditText?: string;
     canLike?: boolean;
     httpclient: WrappedHTTPClient;
+    continuatedList?: ContinuatedList;
+    likeParam?: string;
     constructor(httpclient: WrappedHTTPClient);
     fromPlaylistRenderer(obj: any): void;
     fromPlaylistAddToOptionRenderer(obj: any): void;

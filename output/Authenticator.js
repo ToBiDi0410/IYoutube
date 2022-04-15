@@ -8,18 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Authenticator_token;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Authenticator = void 0;
 const constants_1 = require("./constants");
@@ -28,12 +16,12 @@ const CLIENT_ID = "861556708454-d6dlm3lh05idd8npek18k6be8ba3oc68.apps.googleuser
 const CLIENT_SECRET = "SboVhoG9s0rNafixCSGGKXAT";
 class Authenticator {
     constructor(httpclient, storage) {
-        _Authenticator_token.set(this, {
+        this.token = {
             access: "NULL",
             refresh: "NULL",
             type: "NULL",
             expireDate: new Date()
-        });
+        };
         this.httpClient = httpclient;
         this.storageAdapter = storage;
     }
@@ -46,15 +34,15 @@ class Authenticator {
                     console.log(constants_1.CONSOLE_COLORS.fg.magenta + "[AUTHENTICATOR] Found Token File in Storage, reading it...", constants_1.CONSOLE_COLORS.reset);
                 var str = yield this.storageAdapter.get(TOKEN_FILE);
                 if (str) {
-                    __classPrivateFieldSet(this, _Authenticator_token, JSON.parse(str), "f");
+                    this.token = JSON.parse(str);
                     if (constants_1.DEBUG)
-                        console.log(constants_1.CONSOLE_COLORS.bright + constants_1.CONSOLE_COLORS.fg.green + "[AUTHENTICATOR] Now using Token from Storage (expires: " + new Date(__classPrivateFieldGet(this, _Authenticator_token, "f").expireDate).toLocaleString() + ")", constants_1.CONSOLE_COLORS.reset);
+                        console.log(constants_1.CONSOLE_COLORS.bright + constants_1.CONSOLE_COLORS.fg.green + "[AUTHENTICATOR] Now using Token from Storage (expires: " + new Date(this.token.expireDate).toLocaleString() + ")", constants_1.CONSOLE_COLORS.reset);
                 }
             }
         });
     }
     requiresLogin() {
-        return Object.values(__classPrivateFieldGet(this, _Authenticator_token, "f")).includes("NULL");
+        return Object.values(this.token).includes("NULL");
     }
     getNewLoginCode() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -92,7 +80,7 @@ class Authenticator {
                 res = JSON.parse(res.data);
                 yield new Promise(resolve => setTimeout(resolve, 5000));
             }
-            __classPrivateFieldSet(this, _Authenticator_token, { type: null, access: null, refresh: res.refresh_token, expireDate: null }, "f");
+            this.token = { type: null, access: null, refresh: res.refresh_token, expireDate: null };
             if (constants_1.DEBUG)
                 console.log(constants_1.CONSOLE_COLORS.bright + constants_1.CONSOLE_COLORS.fg.yellow + "[AUTHENTICATOR] Authentication Method successfull: Device Code", constants_1.CONSOLE_COLORS.reset);
             yield this.getToken();
@@ -100,7 +88,7 @@ class Authenticator {
     }
     getToken() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (__classPrivateFieldGet(this, _Authenticator_token, "f").access == null || (Date.now() - __classPrivateFieldGet(this, _Authenticator_token, "f").expireDate) > 0) {
+            if (this.token.access == null || (Date.now() - this.token.expireDate) > 0) {
                 let res = yield this.httpClient.request({
                     method: HTTPClient_1.HTTPRequestMethod.POST,
                     url: "https://oauth2.googleapis.com/token",
@@ -108,18 +96,18 @@ class Authenticator {
                         client_id: CLIENT_ID,
                         client_secret: CLIENT_SECRET,
                         grant_type: "refresh_token",
-                        refresh_token: __classPrivateFieldGet(this, _Authenticator_token, "f").refresh
+                        refresh_token: this.token.refresh
                     })
                 });
                 res = JSON.parse(res.data);
-                __classPrivateFieldSet(this, _Authenticator_token, { type: res.token_type, access: res.access_token, refresh: __classPrivateFieldGet(this, _Authenticator_token, "f").refresh, expireDate: (new Date().getTime() + 1000 * res.expires_in) }, "f");
+                this.token = { type: res.token_type, access: res.access_token, refresh: this.token.refresh, expireDate: (new Date().getTime() + 1000 * res.expires_in) };
                 if (constants_1.DEBUG)
                     console.log(constants_1.CONSOLE_COLORS.bright + constants_1.CONSOLE_COLORS.fg.green + "[AUTHENTICATOR] Refreshed the Access Token using the refresh Token", constants_1.CONSOLE_COLORS.reset);
-                yield this.storageAdapter.set(TOKEN_FILE, JSON.stringify(Object.assign({}, __classPrivateFieldGet(this, _Authenticator_token, "f"))));
+                yield this.storageAdapter.set(TOKEN_FILE, JSON.stringify(Object.assign({}, this.token)));
                 if (constants_1.DEBUG)
                     console.log(constants_1.CONSOLE_COLORS.bright + constants_1.CONSOLE_COLORS.fg.yellow + "[AUTHENTICATOR] Current Token written to Storage", constants_1.CONSOLE_COLORS.reset);
             }
-            return __classPrivateFieldGet(this, _Authenticator_token, "f");
+            return this.token;
         });
     }
     getAuthorizationHeader() {
@@ -130,5 +118,4 @@ class Authenticator {
     }
 }
 exports.Authenticator = Authenticator;
-_Authenticator_token = new WeakMap();
 const TOKEN_FILE = "IYoutubeTokens.json";

@@ -8,18 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Playlist_continuatedList, _Playlist_likeParam;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Playlist = void 0;
 const helpers_1 = require("../fetchers/helpers");
@@ -29,8 +17,6 @@ const main_1 = require("../main");
 const constants_1 = require("../constants");
 class Playlist {
     constructor(httpclient) {
-        _Playlist_continuatedList.set(this, void 0);
-        _Playlist_likeParam.set(this, void 0);
         this.httpclient = httpclient;
     }
     fromPlaylistRenderer(obj) {
@@ -96,7 +82,7 @@ class Playlist {
                 const likeButtonContainer = helpers_1.default.recursiveSearchForKey("toggleButtonRenderer", primaryInfoRendererContainer)[0];
                 if (likeButtonContainer) {
                     this.canLike = true;
-                    __classPrivateFieldSet(this, _Playlist_likeParam, helpers_1.default.recursiveSearchForKey("removeLikeParams", likeButtonContainer).join(""), "f");
+                    this.likeParam = helpers_1.default.recursiveSearchForKey("removeLikeParams", likeButtonContainer).join("");
                 }
                 else
                     this.canLike = false;
@@ -111,24 +97,24 @@ class Playlist {
         });
     }
     getContinuatedList() {
-        if (__classPrivateFieldGet(this, _Playlist_continuatedList, "f"))
-            return __classPrivateFieldGet(this, _Playlist_continuatedList, "f");
+        if (this.continuatedList)
+            return this.continuatedList;
         if (this.playlistId) {
-            __classPrivateFieldSet(this, _Playlist_continuatedList, new PlaylistContinuatedList_1.PlaylistContinuatedList(this.playlistId, this.httpclient), "f");
+            this.continuatedList = new PlaylistContinuatedList_1.PlaylistContinuatedList(this.playlistId, this.httpclient);
             return this.getContinuatedList();
         }
         throw new Error("Cannot construct Continuated List for Playlist without the playlistID");
     }
     like() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!__classPrivateFieldGet(this, _Playlist_likeParam, "f") || !this.canLike)
+            if (!this.likeParam || !this.canLike)
                 throw new Error("Cannot add or remove Playlist because not all Data is loaded or it is not possible");
             const res = yield this.httpclient.request({
                 method: HTTPClient_1.HTTPRequestMethod.POST,
                 url: constants_1.ENDPOINT_LIKE,
                 params: { prettyPrint: false },
                 data: {
-                    params: __classPrivateFieldGet(this, _Playlist_likeParam, "f"),
+                    params: this.likeParam,
                     target: {
                         playlistId: this.playlistId
                     }
@@ -139,14 +125,14 @@ class Playlist {
     }
     removeLike() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!__classPrivateFieldGet(this, _Playlist_likeParam, "f") || !this.canLike)
+            if (!this.likeParam || !this.canLike)
                 throw new Error("Cannot add or remove Playlist because not all Data is loaded or its forbidden");
             const res = yield this.httpclient.request({
                 method: HTTPClient_1.HTTPRequestMethod.POST,
                 url: constants_1.ENDPOINT_REMOVELIKE,
                 params: { prettyPrint: false },
                 data: {
-                    params: __classPrivateFieldGet(this, _Playlist_likeParam, "f"),
+                    params: this.likeParam,
                     target: {
                         playlistId: this.playlistId
                     }
@@ -157,4 +143,3 @@ class Playlist {
     }
 }
 exports.Playlist = Playlist;
-_Playlist_continuatedList = new WeakMap(), _Playlist_likeParam = new WeakMap();

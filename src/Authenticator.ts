@@ -10,7 +10,7 @@ export class Authenticator {
     httpClient : HTTPClient;
     storageAdapter : StorageAdapter;
 
-    #token:any = {
+    token:any = {
         access: "NULL",
         refresh: "NULL",
         type: "NULL",
@@ -29,14 +29,14 @@ export class Authenticator {
             if(DEBUG) console.log(CONSOLE_COLORS.fg.magenta + "[AUTHENTICATOR] Found Token File in Storage, reading it...", CONSOLE_COLORS.reset);
             var str = await this.storageAdapter.get(TOKEN_FILE);
             if(str) {
-                this.#token = JSON.parse(str);
-                if(DEBUG) console.log(CONSOLE_COLORS.bright + CONSOLE_COLORS.fg.green + "[AUTHENTICATOR] Now using Token from Storage (expires: " + new Date(this.#token.expireDate).toLocaleString() + ")", CONSOLE_COLORS.reset);
+                this.token = JSON.parse(str);
+                if(DEBUG) console.log(CONSOLE_COLORS.bright + CONSOLE_COLORS.fg.green + "[AUTHENTICATOR] Now using Token from Storage (expires: " + new Date(this.token.expireDate).toLocaleString() + ")", CONSOLE_COLORS.reset);
             }
         }
     }
 
     requiresLogin() {
-        return Object.values(this.#token).includes("NULL");
+        return Object.values(this.token).includes("NULL");
     }
 
     async getNewLoginCode() {
@@ -73,13 +73,13 @@ export class Authenticator {
             await new Promise(resolve => setTimeout(resolve, 5000));
         }
 
-        this.#token = { type: null, access: null, refresh: res.refresh_token, expireDate: null };
+        this.token = { type: null, access: null, refresh: res.refresh_token, expireDate: null };
         if(DEBUG) console.log(CONSOLE_COLORS.bright + CONSOLE_COLORS.fg.yellow + "[AUTHENTICATOR] Authentication Method successfull: Device Code", CONSOLE_COLORS.reset);
         await this.getToken();
     }
 
     async getToken() {
-        if(this.#token.access == null || (Date.now() - this.#token.expireDate) > 0) {
+        if(this.token.access == null || (Date.now() - this.token.expireDate) > 0) {
             let res:any = await this.httpClient.request({
                 method: HTTPRequestMethod.POST,
                 url: "https://oauth2.googleapis.com/token",
@@ -87,16 +87,16 @@ export class Authenticator {
                     client_id: CLIENT_ID,
                     client_secret: CLIENT_SECRET,
                     grant_type: "refresh_token",
-                    refresh_token: this.#token.refresh
+                    refresh_token: this.token.refresh
                 })
             });
             res = JSON.parse(res.data);
-            this.#token = { type: res.token_type, access: res.access_token, refresh: this.#token.refresh, expireDate: (new Date().getTime() + 1000 * res.expires_in) };
+            this.token = { type: res.token_type, access: res.access_token, refresh: this.token.refresh, expireDate: (new Date().getTime() + 1000 * res.expires_in) };
             if(DEBUG) console.log(CONSOLE_COLORS.bright + CONSOLE_COLORS.fg.green + "[AUTHENTICATOR] Refreshed the Access Token using the refresh Token", CONSOLE_COLORS.reset);
-            await this.storageAdapter.set(TOKEN_FILE, JSON.stringify({...this.#token }));
+            await this.storageAdapter.set(TOKEN_FILE, JSON.stringify({...this.token }));
             if(DEBUG) console.log(CONSOLE_COLORS.bright + CONSOLE_COLORS.fg.yellow + "[AUTHENTICATOR] Current Token written to Storage", CONSOLE_COLORS.reset);
         }
-        return this.#token;
+        return this.token;
     }
 
     async getAuthorizationHeader() {

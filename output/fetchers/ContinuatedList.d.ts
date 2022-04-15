@@ -2,9 +2,11 @@ import { WrappedHTTPClient } from "../WrappedHTTPClient";
 import { HTTPRequestOptions } from "../interfaces/HTTPClient";
 import { Video, Channel, Playlist, Comment, CommentThread } from "../main";
 export declare class ContinuatedList {
-    #private;
     results: Array<Video | Channel | Playlist | Comment | CommentThread>;
     endReached: boolean;
+    requestOptions: HTTPRequestOptions;
+    httpclient: WrappedHTTPClient;
+    dataprocessor: Function;
     continuationToken: string;
     onlyContinuation: boolean;
     constructor(requestOptions: HTTPRequestOptions, dataprocessor: Function, httpclient: WrappedHTTPClient, onlyContinuation?: boolean);

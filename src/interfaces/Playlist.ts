@@ -20,8 +20,8 @@ export class Playlist {
 
     httpclient: WrappedHTTPClient;
 
-    #continuatedList?: ContinuatedList;
-    #likeParam?: string;
+    continuatedList?: ContinuatedList;
+    likeParam?: string;
 
     constructor(httpclient : WrappedHTTPClient) {
         this.httpclient = httpclient;
@@ -106,7 +106,7 @@ export class Playlist {
             const likeButtonContainer = helpers.recursiveSearchForKey("toggleButtonRenderer", primaryInfoRendererContainer)[0];
             if(likeButtonContainer) {
                 this.canLike = true;
-                this.#likeParam = helpers.recursiveSearchForKey("removeLikeParams", likeButtonContainer).join("");
+                this.likeParam = helpers.recursiveSearchForKey("removeLikeParams", likeButtonContainer).join("");
             } else this.canLike = false;
 
         } else throw new Error("PrimaryInfoRenderer was missing");
@@ -120,10 +120,10 @@ export class Playlist {
     }
 
     getContinuatedList():PlaylistContinuatedList {
-        if(this.#continuatedList) return this.#continuatedList;
+        if(this.continuatedList) return this.continuatedList;
 
         if(this.playlistId) {
-            this.#continuatedList = new PlaylistContinuatedList(this.playlistId, this.httpclient);
+            this.continuatedList = new PlaylistContinuatedList(this.playlistId, this.httpclient);
             return this.getContinuatedList();
         }
         
@@ -131,14 +131,14 @@ export class Playlist {
     }
 
     async like() {
-        if(!this.#likeParam || !this.canLike) throw new Error("Cannot add or remove Playlist because not all Data is loaded or it is not possible");
+        if(!this.likeParam || !this.canLike) throw new Error("Cannot add or remove Playlist because not all Data is loaded or it is not possible");
 
         const res = await this.httpclient.request({
             method: HTTPRequestMethod.POST,
             url: ENDPOINT_LIKE,
             params: { prettyPrint: false },
             data: {
-                params: this.#likeParam,
+                params: this.likeParam,
                 target: {
                     playlistId: this.playlistId
                 }
@@ -148,14 +148,14 @@ export class Playlist {
     }
 
     async removeLike() {
-        if(!this.#likeParam || !this.canLike) throw new Error("Cannot add or remove Playlist because not all Data is loaded or its forbidden");
+        if(!this.likeParam || !this.canLike) throw new Error("Cannot add or remove Playlist because not all Data is loaded or its forbidden");
 
         const res = await this.httpclient.request({
             method: HTTPRequestMethod.POST,
             url: ENDPOINT_REMOVELIKE,
             params: { prettyPrint: false },
             data: {
-                params: this.#likeParam,
+                params: this.likeParam,
                 target: {
                     playlistId: this.playlistId
                 }

@@ -8,18 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Comment_likeActionToken, _Comment_dislikeActionToken, _Comment_removeLikeActionToken, _Comment_removeDislikeActionToken;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Comment = void 0;
 const main_1 = require("../main");
@@ -28,10 +16,6 @@ const HTTPClient_1 = require("./HTTPClient");
 const constants_1 = require("../constants");
 class Comment {
     constructor(httpclient) {
-        _Comment_likeActionToken.set(this, void 0);
-        _Comment_dislikeActionToken.set(this, void 0);
-        _Comment_removeLikeActionToken.set(this, void 0);
-        _Comment_removeDislikeActionToken.set(this, void 0);
         this.httpclient = httpclient;
     }
     fromCommentRenderer(obj) {
@@ -54,14 +38,14 @@ class Comment {
         if (actionButtonContainer) {
             const dislikeButton = helpers_1.default.recursiveSearchForKey("dislikeButton", actionButtonContainer);
             if (dislikeButton)
-                __classPrivateFieldSet(this, _Comment_dislikeActionToken, helpers_1.default.recursiveSearchForKey("action", dislikeButton)[0], "f");
-            __classPrivateFieldSet(this, _Comment_removeDislikeActionToken, helpers_1.default.recursiveSearchForKey("action", dislikeButton)[1], "f");
+                this.dislikeActionToken = helpers_1.default.recursiveSearchForKey("action", dislikeButton)[0];
+            this.removeDislikeActionToken = helpers_1.default.recursiveSearchForKey("action", dislikeButton)[1];
             const likeButton = helpers_1.default.recursiveSearchForKey("likeButton", actionButtonContainer);
             if (likeButton) {
-                __classPrivateFieldSet(this, _Comment_likeActionToken, helpers_1.default.recursiveSearchForKey("action", likeButton)[0], "f");
-                __classPrivateFieldSet(this, _Comment_removeLikeActionToken, helpers_1.default.recursiveSearchForKey("action", likeButton)[1], "f");
+                this.likeActionToken = helpers_1.default.recursiveSearchForKey("action", likeButton)[0];
+                this.removeLikeActionToken = helpers_1.default.recursiveSearchForKey("action", likeButton)[1];
             }
-            this.canPerformLikeActions = !(!__classPrivateFieldGet(this, _Comment_dislikeActionToken, "f") && !__classPrivateFieldGet(this, _Comment_likeActionToken, "f"));
+            this.canPerformLikeActions = !(!this.dislikeActionToken && !this.likeActionToken);
         }
     }
     like() {
@@ -72,7 +56,7 @@ class Comment {
                 method: HTTPClient_1.HTTPRequestMethod.POST,
                 url: constants_1.ENDPOINT_COMMENT_ACTION,
                 data: {
-                    actions: [__classPrivateFieldGet(this, _Comment_likeActionToken, "f")]
+                    actions: [this.likeActionToken]
                 }
             });
             this.hasLiked = commentAction.status == 200;
@@ -87,7 +71,7 @@ class Comment {
                 method: HTTPClient_1.HTTPRequestMethod.POST,
                 url: constants_1.ENDPOINT_COMMENT_ACTION,
                 data: {
-                    actions: [__classPrivateFieldGet(this, _Comment_dislikeActionToken, "f")]
+                    actions: [this.dislikeActionToken]
                 }
             });
             this.hasLiked = commentAction.status == 200 ? false : undefined;
@@ -96,12 +80,12 @@ class Comment {
     }
     removeLike() {
         return __awaiter(this, void 0, void 0, function* () {
-            let removeToken = __classPrivateFieldGet(this, _Comment_removeLikeActionToken, "f");
+            let removeToken = this.removeLikeActionToken;
             if (this.hasLiked === true) {
-                removeToken = __classPrivateFieldGet(this, _Comment_removeLikeActionToken, "f");
+                removeToken = this.removeLikeActionToken;
             }
             else if (this.hasLiked === false) {
-                removeToken = __classPrivateFieldGet(this, _Comment_removeDislikeActionToken, "f");
+                removeToken = this.removeDislikeActionToken;
             }
             else {
                 console.warn("[IYOUTUBE | COMMENT] Removal of Like without knowing if it's present!");
@@ -119,4 +103,3 @@ class Comment {
     }
 }
 exports.Comment = Comment;
-_Comment_likeActionToken = new WeakMap(), _Comment_dislikeActionToken = new WeakMap(), _Comment_removeLikeActionToken = new WeakMap(), _Comment_removeDislikeActionToken = new WeakMap();

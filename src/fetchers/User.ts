@@ -1,4 +1,4 @@
-import { Channel } from "diagnostics_channel";
+import { Channel } from "../main";
 import { ContinuatedList } from "./ContinuatedList";
 import { HTTPRequestMethod } from "../interfaces/HTTPClient";
 import { Playlist } from "../interfaces/Playlist";

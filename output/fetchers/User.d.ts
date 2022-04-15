@@ -1,5 +1,4 @@
-/// <reference types="node" />
-import { Channel } from "diagnostics_channel";
+import { Channel } from "../main";
 import { ContinuatedList } from "./ContinuatedList";
 import { Playlist } from "../interfaces/Playlist";
 import IYoutube from "../IYoutube";

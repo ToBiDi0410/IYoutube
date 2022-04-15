@@ -14,10 +14,10 @@ export class Comment {
     hasLiked?: boolean;
     publishedText?: string;
 
-    #likeActionToken?:string;
-    #dislikeActionToken?:string;
-    #removeLikeActionToken?:string;
-    #removeDislikeActionToken?:string;
+    likeActionToken?:string;
+    dislikeActionToken?:string;
+    removeLikeActionToken?:string;
+    removeDislikeActionToken?:string;
     canPerformLikeActions?:boolean;
 
     constructor(httpclient: WrappedHTTPClient) {
@@ -50,16 +50,16 @@ export class Comment {
         if(actionButtonContainer) {
             const dislikeButton = helpers.recursiveSearchForKey("dislikeButton", actionButtonContainer);
             if(dislikeButton)
-                this.#dislikeActionToken = helpers.recursiveSearchForKey("action", dislikeButton)[0];
-                this.#removeDislikeActionToken = helpers.recursiveSearchForKey("action", dislikeButton)[1];
+                this.dislikeActionToken = helpers.recursiveSearchForKey("action", dislikeButton)[0];
+                this.removeDislikeActionToken = helpers.recursiveSearchForKey("action", dislikeButton)[1];
 
             const likeButton = helpers.recursiveSearchForKey("likeButton", actionButtonContainer);
             if(likeButton) {
-                this.#likeActionToken = helpers.recursiveSearchForKey("action", likeButton)[0];
-                this.#removeLikeActionToken = helpers.recursiveSearchForKey("action", likeButton)[1];
+                this.likeActionToken = helpers.recursiveSearchForKey("action", likeButton)[0];
+                this.removeLikeActionToken = helpers.recursiveSearchForKey("action", likeButton)[1];
             }
 
-            this.canPerformLikeActions = !(!this.#dislikeActionToken && !this.#likeActionToken);
+            this.canPerformLikeActions = !(!this.dislikeActionToken && !this.likeActionToken);
         }
     }
 
@@ -69,7 +69,7 @@ export class Comment {
             method: HTTPRequestMethod.POST,
             url: ENDPOINT_COMMENT_ACTION,
             data: {
-                actions: [this.#likeActionToken]
+                actions: [this.likeActionToken]
             }
         });
         this.hasLiked = commentAction.status == 200;
@@ -82,7 +82,7 @@ export class Comment {
             method: HTTPRequestMethod.POST,
             url: ENDPOINT_COMMENT_ACTION,
             data: {
-                actions: [this.#dislikeActionToken]
+                actions: [this.dislikeActionToken]
             }
         });
         this.hasLiked = commentAction.status == 200 ? false : undefined;
@@ -90,11 +90,11 @@ export class Comment {
     }
 
     async removeLike() {
-        let removeToken = this.#removeLikeActionToken;
+        let removeToken = this.removeLikeActionToken;
         if(this.hasLiked === true) {
-            removeToken = this.#removeLikeActionToken;
+            removeToken = this.removeLikeActionToken;
         } else if(this.hasLiked === false) {
-            removeToken = this.#removeDislikeActionToken;
+            removeToken = this.removeDislikeActionToken;
         } else {
             console.warn("[IYOUTUBE | COMMENT] Removal of Like without knowing if it's present!");
         }

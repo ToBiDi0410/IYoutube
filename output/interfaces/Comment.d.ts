@@ -1,6 +1,5 @@
 import { Channel, WrappedHTTPClient } from "../main";
 export declare class Comment {
-    #private;
     httpclient: WrappedHTTPClient;
     commentId?: string;
     text?: string;
@@ -9,6 +8,10 @@ export declare class Comment {
     likeCount?: number;
     hasLiked?: boolean;
     publishedText?: string;
+    likeActionToken?: string;
+    dislikeActionToken?: string;
+    removeLikeActionToken?: string;
+    removeDislikeActionToken?: string;
     canPerformLikeActions?: boolean;
     constructor(httpclient: WrappedHTTPClient);
     fromCommentRenderer(obj: any): void;
