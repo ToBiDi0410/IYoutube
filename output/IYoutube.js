@@ -8,38 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _IYoutube_explorer, _IYoutube_user;
 Object.defineProperty(exports, "__esModule", { value: true });
 const Authenticator_1 = require("./Authenticator");
+const HTTPClient_1 = require("./interfaces/HTTPClient");
 const WrappedHTTPClient_1 = require("./WrappedHTTPClient");
 const SearchContinuatedList_1 = require("./fetchers/SearchContinuatedList");
 const Explorer_1 = require("./fetchers/Explorer");
+const ContinuatedList_1 = require("./fetchers/ContinuatedList");
 const User_1 = require("./fetchers/User");
 const Playlist_1 = require("./interfaces/Playlist");
 const constants_1 = require("./constants");
 const main_1 = require("./main");
+const helpers_1 = require("./fetchers/helpers");
 class IYoutube {
     constructor(httpClient, storageAdapater) {
-        _IYoutube_explorer.set(this, void 0);
-        _IYoutube_user.set(this, void 0);
         this.rawHttpClient = httpClient;
         this.wrappedHttpClient = new WrappedHTTPClient_1.WrappedHTTPClient(this.rawHttpClient);
         this.storageAdapter = storageAdapater;
         this.authenticator = new Authenticator_1.Authenticator(this.rawHttpClient, this.storageAdapter);
         this.wrappedHttpClient.authorizationHeaderCallback = () => { return this.authenticator.getAuthorizationHeader(); };
-        __classPrivateFieldSet(this, _IYoutube_explorer, new Explorer_1.Explorer(this.wrappedHttpClient, this), "f");
-        __classPrivateFieldSet(this, _IYoutube_user, new User_1.User(this.wrappedHttpClient, this), "f");
+        this.explorer = new Explorer_1.Explorer(this.wrappedHttpClient, this);
+        this.user = new User_1.User(this.wrappedHttpClient, this);
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -82,11 +71,25 @@ class IYoutube {
             return v;
         });
     }
+    getWhatToWatch() {
+        return new ContinuatedList_1.ContinuatedList({
+            url: constants_1.ENDPOINT_BROWSE,
+            method: HTTPClient_1.HTTPRequestMethod.POST,
+            data: {
+                browseId: "FEwhat_to_watch"
+            }
+        }, (data) => {
+            const renderers = helpers_1.default.recursiveSearchForKey("richItemRenderer", data);
+            let contents = helpers_1.default.recursiveSearchForKey("content", renderers);
+            contents = contents.flat(1);
+            return contents;
+        }, this.wrappedHttpClient, true);
+    }
     getExplorer() {
-        return __classPrivateFieldGet(this, _IYoutube_explorer, "f");
+        return this.explorer;
     }
     getUser() {
-        return __classPrivateFieldGet(this, _IYoutube_user, "f");
+        return this.user;
     }
     throwErrorIfNotReady() {
         if (!this.storageAdapter)
@@ -98,4 +101,3 @@ class IYoutube {
     }
 }
 exports.default = IYoutube;
-_IYoutube_explorer = new WeakMap(), _IYoutube_user = new WeakMap();

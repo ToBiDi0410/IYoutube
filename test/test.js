@@ -1,5 +1,5 @@
 /* Import Library */
-const iyoutube = require("iyoutube");
+const iyoutube = require("../");
 
 //OR ESM:
 //import * as iyoutube from 'iyoutube';
@@ -39,6 +39,12 @@ const iyoutube = require("iyoutube");
 
     //Dirty way of getting the Results (without any Type), use the Getters instead!
     console.log(testPlaylistVideos.results);
+
+    var testWhat = ytClient.getWhatToWatch(); //Get the Start Page Video List (what to watch Page)
+    await testWhat.loadFurhter(); //Load Batch of Videos from List
+    console.log(testWhat.getVideos().length);
+    await testWhat.loadFurhter(); //Load Batch of Videos from List
+    console.log(testWhat.getVideos().length);
 
     // The Video Amount per Batch varies from List Type (e.g Playlist, Search) but also from Randomness of the Youtube API
     // Hint: loadFurther() returns the new Videos and adds them to the results at the same Time

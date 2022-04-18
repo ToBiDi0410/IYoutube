@@ -1,5 +1,5 @@
 import { Authenticator } from "./Authenticator";
-import { HTTPClient } from "./interfaces/HTTPClient";
+import { HTTPClient, HTTPRequestMethod } from "./interfaces/HTTPClient";
 import { StorageAdapter } from "./interfaces/StorageAdapter";
 import { WrappedHTTPClient } from "./WrappedHTTPClient";
 
@@ -8,8 +8,9 @@ import { Explorer } from "./fetchers/Explorer";
 import { ContinuatedList } from "./fetchers/ContinuatedList";
 import { User } from "./fetchers/User";
 import { Playlist } from "./interfaces/Playlist";
-import { DEBUG } from "./constants";
+import { DEBUG, ENDPOINT_BROWSE } from "./constants";
 import { Channel, Video } from "./main";
+import helpers from "./fetchers/helpers";
 
 export default class IYoutube {
 
@@ -19,8 +20,8 @@ export default class IYoutube {
     storageAdapter : StorageAdapter;
     authenticator: Authenticator;
 
-    #explorer : Explorer;
-    #user : User;
+    explorer : Explorer;
+    user : User;
 
     constructor(httpClient : HTTPClient, storageAdapater : StorageAdapter) {
         this.rawHttpClient = httpClient;
@@ -30,8 +31,8 @@ export default class IYoutube {
         this.authenticator = new Authenticator(this.rawHttpClient, this.storageAdapter);
         this.wrappedHttpClient.authorizationHeaderCallback = () => { return this.authenticator.getAuthorizationHeader() };
 
-        this.#explorer = new Explorer(this.wrappedHttpClient, this);
-        this.#user = new User(this.wrappedHttpClient, this);
+        this.explorer = new Explorer(this.wrappedHttpClient, this);
+        this.user = new User(this.wrappedHttpClient, this);
     }
 
     async init() {
@@ -69,12 +70,27 @@ export default class IYoutube {
         return v;
     }
 
+    getWhatToWatch():ContinuatedList {
+        return new ContinuatedList({
+            url: ENDPOINT_BROWSE,
+            method: HTTPRequestMethod.POST,
+            data: {
+                browseId: "FEwhat_to_watch"
+            }
+        }, (data:any) => {
+            const renderers = helpers.recursiveSearchForKey("richItemRenderer", data);
+            let contents = helpers.recursiveSearchForKey("content", renderers);
+            contents = contents.flat(1);
+            return contents;
+        }, this.wrappedHttpClient, true);
+    }
+
     getExplorer():Explorer {
-        return this.#explorer;
+        return this.explorer;
     }
 
     getUser():User {
-        return this.#user;
+        return this.user;
     }
 
     throwErrorIfNotReady(){
