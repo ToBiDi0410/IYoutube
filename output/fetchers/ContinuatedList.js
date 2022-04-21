@@ -11,16 +11,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContinuatedList = void 0;
 const helpers_1 = require("./helpers");
-const main_1 = require("../main");
-class ContinuatedList {
+const List_1 = require("../interfaces/List");
+class ContinuatedList extends List_1.List {
     constructor(requestOptions, dataprocessor, httpclient, onlyContinuation) {
+        super();
         this.endReached = false;
         this.continuationToken = "";
         this.onlyContinuation = false;
         this.requestOptions = requestOptions;
         this.httpclient = httpclient;
         this.dataprocessor = dataprocessor;
-        this.results = new Array();
         if (this.onlyContinuation)
             this.onlyContinuation = onlyContinuation;
     }
@@ -56,24 +56,6 @@ class ContinuatedList {
             this.results = this.results.concat(items);
             return items;
         });
-    }
-    getByType(type) {
-        return this.results.filter((elem) => { return elem instanceof type; });
-    }
-    getVideos() {
-        return this.getByType(main_1.Video);
-    }
-    getPlaylists() {
-        return this.getByType(main_1.Playlist);
-    }
-    getChannels() {
-        return this.getByType(main_1.Channel);
-    }
-    getComments() {
-        return this.getByType(main_1.Comment);
-    }
-    getCommentThreads() {
-        return this.getByType(main_1.CommentThread);
     }
 }
 exports.ContinuatedList = ContinuatedList;

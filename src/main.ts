@@ -15,6 +15,7 @@ import { CommentThread } from "./interfaces/CommentThread";
 import { WrappedHTTPClient } from "./WrappedHTTPClient";
 import { CommentThreadRepliesContinuatedList } from "./fetchers/CommentThreadRepliesContinuatedList";
 import { CaptionTrack } from "./interfaces/CaptionTrack";
+import { List } from "./interfaces/List";
 import { default as IYoutube } from "./IYoutube";
 
 
@@ -38,6 +39,7 @@ export { Comment as Comment }
 export { CommentThread as CommentThread }
 export { CommentThreadRepliesContinuatedList as CommentThreadRepliesContinuatedList }
 export { CaptionTrack as CaptionTrack }
+export { List as List }
 
 //Skips Webpack checks
 export const nodeDefault = async ():Promise<IYoutube> => {

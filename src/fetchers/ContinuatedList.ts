@@ -1,13 +1,11 @@
 import helpers from "./helpers";
 import { WrappedHTTPClient } from "../WrappedHTTPClient";
 import { HTTPRequestOptions } from "../interfaces/HTTPClient";
-import { Video, Channel, Playlist, Comment, CommentThread } from "../main";
+import { List } from "../interfaces/List";
 
-export class ContinuatedList {
+export class ContinuatedList extends List {
 
-    results: Array<Video | Channel | Playlist | Comment | CommentThread>;
     endReached = false;
-
     requestOptions: HTTPRequestOptions;
     httpclient: WrappedHTTPClient;
     dataprocessor: Function;
@@ -15,10 +13,10 @@ export class ContinuatedList {
     onlyContinuation = false;
 
     constructor(requestOptions: HTTPRequestOptions, dataprocessor: Function, httpclient : WrappedHTTPClient, onlyContinuation?:boolean) {
+        super();
         this.requestOptions = requestOptions;
         this.httpclient = httpclient;
         this.dataprocessor = dataprocessor;
-        this.results = new Array();
         if(this.onlyContinuation) this.onlyContinuation = onlyContinuation as boolean;
     }
 
@@ -50,29 +48,5 @@ export class ContinuatedList {
         items = helpers.processRendererItems(items, this.httpclient);
         this.results = this.results.concat(items);
         return items;
-    }
-
-    getByType(type: any) {
-        return this.results.filter((elem) => { return elem instanceof type });
-    }
-
-    getVideos():Array<Video> {
-        return this.getByType(Video) as Array<Video>
-    }
-
-    getPlaylists():Array<Playlist> {
-        return this.getByType(Playlist) as Array<Playlist>;
-    }
-
-    getChannels():Array<Channel> {
-        return this.getByType(Channel) as Array<Channel>;
-    }
-
-    getComments():Array<Comment> {
-        return this.getByType(Comment) as Array<Comment>;
-    }
-
-    getCommentThreads():Array<CommentThread> {
-        return this.getByType(CommentThread) as Array<CommentThread>;
     }
 }
