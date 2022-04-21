@@ -3,8 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.List = void 0;
 const main_1 = require("../main");
 class List {
-    constructor() {
-        this.results = new Array();
+    constructor(array) {
+        if (array) {
+            this.results = array;
+        }
+        else {
+            this.results = new Array();
+        }
     }
     getByType(type) {
         return this.results.filter((elem) => { return elem instanceof type; });

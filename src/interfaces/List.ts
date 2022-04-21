@@ -3,8 +3,12 @@ import { Video, Channel, Playlist, Comment, CommentThread } from "../main";
 export class List {
     results: Array<Video | Channel | Playlist | Comment | CommentThread>;
 
-    constructor() {
-        this.results = new Array();
+    constructor(array?:Array<any>) {
+        if(array) {
+            this.results = array;
+        } else {
+            this.results = new Array();
+        }
     }
 
     getByType(type: any) {

@@ -1,4 +1,4 @@
-import { Channel } from "../main";
+import { Channel, List } from "../main";
 import { ContinuatedList } from "./ContinuatedList";
 import { HTTPRequestMethod } from "../interfaces/HTTPClient";
 import { Playlist } from "../interfaces/Playlist";
@@ -17,7 +17,7 @@ export class User {
         this.client = client;
     }
 
-    async getPlaylists():Promise<Array<Playlist>> {
+    async getPlaylists():Promise<List> {
         this.client.throwErrorIfNotReady();
         const res = await this.httpclient.request({
             method: HTTPRequestMethod.POST,
@@ -37,7 +37,7 @@ export class User {
             return playlist;
         });
 
-        return playlists;
+        return new List(playlists);
     }
 
     async getWatchLaterPlaylist() {
@@ -48,7 +48,7 @@ export class User {
         return await this.client.getPlaylist("LL");
     }
 
-    async getSubscriptions():Promise<Array<Channel>> {
+    async getSubscriptions():Promise<List> {
         this.client.throwErrorIfNotReady();
         const res = await this.httpclient.request({
             method: HTTPRequestMethod.POST,
@@ -61,7 +61,7 @@ export class User {
         const expandedShelfContentsRenderer = helpers.recursiveSearchForKey("expandedShelfContentsRenderer", resJSON)[0];
         let items = expandedShelfContentsRenderer.items;
         items = helpers.processRendererItems(items, this.httpclient);
-        return items;
+        return new List(items);
     }
 
     getSubscriptionFeed():ContinuatedList {

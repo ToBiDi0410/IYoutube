@@ -1,4 +1,4 @@
-import { Channel } from "../main";
+import { List } from "../main";
 import { ContinuatedList } from "./ContinuatedList";
 import { Playlist } from "../interfaces/Playlist";
 import IYoutube from "../IYoutube";
@@ -7,9 +7,9 @@ export declare class User {
     httpclient: WrappedHTTPClient;
     client: IYoutube;
     constructor(httpclient: WrappedHTTPClient, client: IYoutube);
-    getPlaylists(): Promise<Array<Playlist>>;
+    getPlaylists(): Promise<List>;
     getWatchLaterPlaylist(): Promise<Playlist>;
     getLikedPlaylist(): Promise<Playlist>;
-    getSubscriptions(): Promise<Array<Channel>>;
+    getSubscriptions(): Promise<List>;
     getSubscriptionFeed(): ContinuatedList;
 }

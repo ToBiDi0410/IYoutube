@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
+const main_1 = require("../main");
 const HTTPClient_1 = require("../interfaces/HTTPClient");
 const Playlist_1 = require("../interfaces/Playlist");
 const helpers_1 = require("./helpers");
@@ -39,7 +40,7 @@ class User {
                 playlist.fromPlaylistAddToOptionRenderer(a.playlistAddToOptionRenderer);
                 return playlist;
             });
-            return playlists;
+            return new main_1.List(playlists);
         });
     }
     getWatchLaterPlaylist() {
@@ -65,7 +66,7 @@ class User {
             const expandedShelfContentsRenderer = helpers_1.default.recursiveSearchForKey("expandedShelfContentsRenderer", resJSON)[0];
             let items = expandedShelfContentsRenderer.items;
             items = helpers_1.default.processRendererItems(items, this.httpclient);
-            return items;
+            return new main_1.List(items);
         });
     }
     getSubscriptionFeed() {
