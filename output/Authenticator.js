@@ -67,18 +67,24 @@ class Authenticator {
         return __awaiter(this, void 0, void 0, function* () {
             var res;
             while (!res || !res.refresh_token) {
-                res = yield this.httpClient.request({
-                    method: HTTPClient_1.HTTPRequestMethod.POST,
-                    url: "https://oauth2.googleapis.com/token",
-                    data: JSON.stringify({
-                        client_id: CLIENT_ID,
-                        client_secret: CLIENT_SECRET,
-                        device_code: deviceCode,
-                        grant_type: "urn:ietf:params:oauth:grant-type:device_code"
-                    })
-                });
-                res = JSON.parse(res.data);
-                yield new Promise(resolve => setTimeout(resolve, 5000));
+                try {
+                    res = yield this.httpClient.request({
+                        method: HTTPClient_1.HTTPRequestMethod.POST,
+                        url: "https://oauth2.googleapis.com/token",
+                        data: JSON.stringify({
+                            client_id: CLIENT_ID,
+                            client_secret: CLIENT_SECRET,
+                            device_code: deviceCode,
+                            grant_type: "urn:ietf:params:oauth:grant-type:device_code"
+                        })
+                    });
+                    res = JSON.parse(res.data);
+                    yield new Promise(resolve => setTimeout(resolve, 5000));
+                }
+                catch (err) {
+                    if (constants_1.DEBUG)
+                        console.log("[AUTHENTICATOR] Failed to recieve Token with Code:\n", err);
+                }
             }
             this.token = { type: null, access: null, refresh: res.refresh_token, expireDate: null };
             if (constants_1.DEBUG)

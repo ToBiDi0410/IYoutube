@@ -59,18 +59,23 @@ export class Authenticator {
     async loadTokensWithDeviceCode(deviceCode: string) {
         var res:any;
         while(!res || !res.refresh_token) {
-            res = await this.httpClient.request({
-                method: HTTPRequestMethod.POST,
-                url: "https://oauth2.googleapis.com/token",
-                data: JSON.stringify({
-                    client_id: CLIENT_ID,
-                    client_secret: CLIENT_SECRET,
-                    device_code: deviceCode,
-                    grant_type: "urn:ietf:params:oauth:grant-type:device_code"
-                })
-            });
-            res = JSON.parse(res.data);
-            await new Promise(resolve => setTimeout(resolve, 5000));
+            try {
+                res = await this.httpClient.request({
+                    method: HTTPRequestMethod.POST,
+                    url: "https://oauth2.googleapis.com/token",
+                    data: JSON.stringify({
+                        client_id: CLIENT_ID,
+                        client_secret: CLIENT_SECRET,
+                        device_code: deviceCode,
+                        grant_type: "urn:ietf:params:oauth:grant-type:device_code"
+                    })
+                });
+                res = JSON.parse(res.data);
+                await new Promise(resolve => setTimeout(resolve, 5000));
+            } catch(err) {
+                if(DEBUG) console.log("[AUTHENTICATOR] Failed to recieve Token with Code:\n", err);
+            }
+            
         }
 
         this.token = { type: null, access: null, refresh: res.refresh_token, expireDate: null };
