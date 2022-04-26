@@ -99,7 +99,7 @@ export class Playlist {
             if(descriptionContainer)
                 this.description= helpers.recursiveSearchForKey("text", descriptionContainer).join("");
 
-            const thumbnailsContainer = helpers.recursiveSearchForKey("thumbnails", primaryInfoRendererContainer);
+            const thumbnailsContainer = helpers.recursiveSearchForKey("thumbnails", primaryInfoRendererContainer)[0];
             if(thumbnailsContainer)
                 this.thumbnails = thumbnailsContainer;
 
