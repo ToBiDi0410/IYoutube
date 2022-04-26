@@ -53,7 +53,10 @@ class Authenticator {
                     client_id: CLIENT_ID,
                     scope: "https://www.googleapis.com/auth/youtube"
                 }),
-                headers: {}
+                headers: {
+                    "content-type": "text/plain;charset=UTF-8",
+                    "user-agent": constants_1.DEFAULT_USER_AGENT
+                }
             });
             if (res.status != 200)
                 throw new Error("Failed to get new Google Login Code");
@@ -76,7 +79,11 @@ class Authenticator {
                             client_secret: CLIENT_SECRET,
                             device_code: deviceCode,
                             grant_type: "urn:ietf:params:oauth:grant-type:device_code"
-                        })
+                        }),
+                        headers: {
+                            "content-type": "text/plain;charset=UTF-8",
+                            "user-agent": constants_1.DEFAULT_USER_AGENT
+                        }
                     });
                     res = JSON.parse(res.data);
                     yield new Promise(resolve => setTimeout(resolve, 5000));
@@ -103,7 +110,11 @@ class Authenticator {
                         client_secret: CLIENT_SECRET,
                         grant_type: "refresh_token",
                         refresh_token: this.token.refresh
-                    })
+                    }),
+                    headers: {
+                        "content-type": "text/plain;charset=UTF-8",
+                        "user-agent": constants_1.DEFAULT_USER_AGENT
+                    }
                 });
                 res = JSON.parse(res.data);
                 this.token = { type: res.token_type, access: res.access_token, refresh: this.token.refresh, expireDate: (new Date().getTime() + 1000 * res.expires_in) };

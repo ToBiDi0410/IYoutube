@@ -76,7 +76,7 @@ class Playlist {
                 const descriptionContainer = helpers_1.default.recursiveSearchForKey("description", primaryInfoRendererContainer)[0];
                 if (descriptionContainer)
                     this.description = helpers_1.default.recursiveSearchForKey("text", descriptionContainer).join("");
-                const thumbnailsContainer = helpers_1.default.recursiveSearchForKey("thumbnails", primaryInfoRendererContainer);
+                const thumbnailsContainer = helpers_1.default.recursiveSearchForKey("thumbnails", primaryInfoRendererContainer)[0];
                 if (thumbnailsContainer)
                     this.thumbnails = thumbnailsContainer;
                 const likeButtonContainer = helpers_1.default.recursiveSearchForKey("toggleButtonRenderer", primaryInfoRendererContainer)[0];
