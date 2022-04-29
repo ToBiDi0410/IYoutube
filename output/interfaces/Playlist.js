@@ -34,6 +34,34 @@ class Playlist {
             this.owner.fromPlaylistRenderer(obj);
         }
     }
+    fromGridPlaylistRenderer(obj) {
+        this.fromPlaylistRenderer(obj);
+        const viewCountContainer = helpers_1.default.recursiveSearchForKey("thumbnailText", obj)[0];
+        if (viewCountContainer) {
+            this.videoCount = helpers_1.default.getNumberFromText(helpers_1.default.recursiveSearchForKey("text", viewCountContainer).join(""));
+        }
+        const badgesContainer = helpers_1.default.recursiveSearchForKey("badges", obj);
+        if (badgesContainer) {
+            const badgeRenderers = helpers_1.default.recursiveSearchForKey("metadataBadgeRenderer", badgesContainer);
+            if (badgeRenderers.length > 0) {
+                this.badges = badgeRenderers.map((badgeRenderer) => ({
+                    name: helpers_1.default.recursiveSearchForKey("label", badgeRenderer)[0],
+                    icon: helpers_1.default.recursiveSearchForKey("iconType", badgeRenderer)[0],
+                    style: helpers_1.default.recursiveSearchForKey("style", badgeRenderer)[0]
+                }));
+            }
+        }
+        if (this.badges) {
+            if (this.badges.find((a) => { return a.icon == "PRIVACY_PRIVATE"; }))
+                this.privacyState = "PRIVATE";
+            else if (this.badges.find((a) => { return a.icon == "PRIVACY_UNLISTED"; }))
+                this.privacyState = "UNLISTED";
+            else
+                this.privacyState = "PUBLIC";
+        }
+        else
+            this.privacyState = "PUBLIC";
+    }
     fromPlaylistAddToOptionRenderer(obj) {
         this.playlistId = helpers_1.default.recursiveSearchForKey("playlistId", obj)[0];
     }

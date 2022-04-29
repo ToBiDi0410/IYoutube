@@ -1,7 +1,7 @@
 import helpers from "../fetchers/helpers";
 import { PlaylistContinuatedList } from "../fetchers/PlaylistContinuatedList";
 import { HTTPRequestMethod } from "./HTTPClient";
-import { Video, Thumbnail, ContinuatedList, Channel, WrappedHTTPClient } from "../main";
+import { Video, Thumbnail, ContinuatedList, Channel, WrappedHTTPClient, Badge } from "../main";
 import { ENDPOINT_BROWSE, ENDPOINT_LIKE, ENDPOINT_REMOVELIKE } from "../constants";
 
 export class Playlist {
@@ -17,6 +17,8 @@ export class Playlist {
     isEditable?:boolean;
     lastEditText?:string;
     canLike?: boolean;
+    badges?: Array<Badge>;
+    privacyState?: "PRIVATE" | "UNLISTED" | "PUBLIC";
 
     httpclient: WrappedHTTPClient;
 
@@ -45,6 +47,33 @@ export class Playlist {
             this.owner = new Channel(this.httpclient);
             this.owner.fromPlaylistRenderer(obj);
         }
+    }
+
+    fromGridPlaylistRenderer(obj: any) {
+        this.fromPlaylistRenderer(obj);
+
+        const viewCountContainer = helpers.recursiveSearchForKey("thumbnailText", obj)[0];
+        if(viewCountContainer) {
+            this.videoCount = helpers.getNumberFromText(helpers.recursiveSearchForKey("text", viewCountContainer).join(""));
+        }
+
+        const badgesContainer = helpers.recursiveSearchForKey("badges", obj);
+        if(badgesContainer) {
+            const badgeRenderers = helpers.recursiveSearchForKey("metadataBadgeRenderer", badgesContainer);
+            if(badgeRenderers.length > 0) {
+                this.badges = badgeRenderers.map((badgeRenderer:any) => ({
+                    name: helpers.recursiveSearchForKey("label", badgeRenderer)[0],
+                    icon: helpers.recursiveSearchForKey("iconType", badgeRenderer)[0],
+                    style: helpers.recursiveSearchForKey("style", badgeRenderer)[0]
+                }));
+            }
+        }
+
+        if(this.badges) {
+            if(this.badges.find((a) => { return a.icon == "PRIVACY_PRIVATE" })) this.privacyState = "PRIVATE";
+            else if(this.badges.find((a) => { return a.icon == "PRIVACY_UNLISTED" })) this.privacyState = "UNLISTED";
+            else this.privacyState = "PUBLIC";
+        } else this.privacyState = "PUBLIC";
     }
 
     fromPlaylistAddToOptionRenderer(obj: any) {

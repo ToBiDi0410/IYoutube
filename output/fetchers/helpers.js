@@ -95,6 +95,11 @@ function processRendererItems(arr, httpclient) {
             playlist.fromPlaylistRenderer(elem.playlistRenderer);
             return playlist;
         }
+        else if (elem.gridPlaylistRenderer) {
+            var playlist = new Playlist_1.Playlist(httpclient);
+            playlist.fromGridPlaylistRenderer(elem.gridPlaylistRenderer);
+            return playlist;
+        }
         else if (elem.continuationItemRenderer || elem.shelfRenderer) {
             return undefined;
         }

@@ -103,6 +103,12 @@ function processRendererItems(arr : Array<any>, httpclient: WrappedHTTPClient) {
             return playlist;
         }
 
+        else if(elem.gridPlaylistRenderer) {
+            var playlist = new Playlist(httpclient);
+            playlist.fromGridPlaylistRenderer(elem.gridPlaylistRenderer);
+            return playlist;
+        }
+
         /* Ignored */
         else if(elem.continuationItemRenderer || elem.shelfRenderer) {
             return undefined;

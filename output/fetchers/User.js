@@ -26,6 +26,30 @@ class User {
             this.client.throwErrorIfNotReady();
             const res = yield this.httpclient.request({
                 method: HTTPClient_1.HTTPRequestMethod.POST,
+                url: constants_1.ENDPOINT_BROWSE,
+                params: { prettyPrint: false },
+                data: {
+                    browseId: "FElibrary"
+                }
+            });
+            const resJSON = yield JSON.parse(res.data);
+            const itemSectionRenderers = helpers_1.default.recursiveSearchForKey("itemSectionRenderer", resJSON);
+            const playlistItemSectionRenderer = itemSectionRenderers.find((a) => {
+                const title = helpers_1.default.recursiveSearchForKey("text", helpers_1.default.recursiveSearchForKey("shelfRenderer", a)[0].title).join("");
+                return title.toLowerCase().includes("playlists");
+            });
+            if (!playlistItemSectionRenderer)
+                throw constants_1.ERROR_DATA_INVALID_FORMAT;
+            let items = helpers_1.default.recursiveSearchForKey("items", playlistItemSectionRenderer)[0];
+            items = helpers_1.default.processRendererItems(items, this.httpclient);
+            return new main_1.List(items);
+        });
+    }
+    getEditablePlaylists() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.client.throwErrorIfNotReady();
+            const res = yield this.httpclient.request({
+                method: HTTPClient_1.HTTPRequestMethod.POST,
                 url: constants_1.ENDPOINT_ADDTOPLAYLIST,
                 params: { prettyPrint: false },
                 data: {

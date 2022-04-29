@@ -8,6 +8,7 @@ export declare class User {
     client: IYoutube;
     constructor(httpclient: WrappedHTTPClient, client: IYoutube);
     getPlaylists(): Promise<List>;
+    getEditablePlaylists(): Promise<List>;
     getWatchLaterPlaylist(): Promise<Playlist>;
     getLikedPlaylist(): Promise<Playlist>;
     getSubscriptions(): Promise<List>;

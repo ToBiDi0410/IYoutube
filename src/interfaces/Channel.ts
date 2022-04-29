@@ -1,5 +1,5 @@
 import { ENDPOINT_BROWSE, ENDPOINT_SUBSCRIBE, ENDPOINT_UNSUBSCRIBE } from "../constants";
-import { ContinuatedList, Thumbnail, ChannelBadge, WrappedHTTPClient  } from "../main";
+import { ContinuatedList, Thumbnail, Badge, WrappedHTTPClient  } from "../main";
 import helpers from "../fetchers/helpers"
 import { HTTPRequestMethod } from "./HTTPClient";
 import { ChannelLink } from "./ChannelLink";
@@ -10,7 +10,7 @@ export class Channel {
     title?: string;
     description?: string;
     shortDescription?: string;
-    badges?: Array<ChannelBadge>;
+    badges?: Array<Badge>;
     thumbnails?: Array<Thumbnail>;
     banners?: Array<Thumbnail>;
     mobileBanners?: Array<Thumbnail>;

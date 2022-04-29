@@ -1,4 +1,4 @@
-import { ContinuatedList, Thumbnail, ChannelBadge, WrappedHTTPClient } from "../main";
+import { ContinuatedList, Thumbnail, Badge, WrappedHTTPClient } from "../main";
 import { ChannelLink } from "./ChannelLink";
 export declare class Channel {
     #private;
@@ -6,7 +6,7 @@ export declare class Channel {
     title?: string;
     description?: string;
     shortDescription?: string;
-    badges?: Array<ChannelBadge>;
+    badges?: Array<Badge>;
     thumbnails?: Array<Thumbnail>;
     banners?: Array<Thumbnail>;
     mobileBanners?: Array<Thumbnail>;
