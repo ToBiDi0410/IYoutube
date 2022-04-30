@@ -124,9 +124,18 @@ function processRendererItems(arr : Array<any>, httpclient: WrappedHTTPClient) {
     return processedList;
 }
 
+export function getVideoDefaultThumbnail(videoId:string) {
+    return {
+        url: "https://i.ytimg.com/vi/" + videoId + "/maxresdefault.jpg",
+        height: 1,
+        width: 1
+    }
+}
+
 export default {
     recursiveSearchForPair: recursiveSearchForPair,
     recursiveSearchForKey: recursiveSearchForKey,
     getNumberFromText: getNumberFromText,
-    processRendererItems: processRendererItems
+    processRendererItems: processRendererItems,
+    getVideoDefaultThumbnail: getVideoDefaultThumbnail
 }

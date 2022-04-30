@@ -73,12 +73,27 @@ export class Video {
         //PUBLISHED
         const timeTextContainer = helpers.recursiveSearchForKey("publishedTimeText", obj)[0];
         if(timeTextContainer)
-            this.publishedText = helpers.recursiveSearchForKey("simpleText", timeTextContainer)[0];
+            this.publishedText = helpers.recursiveSearchForKey("simpleText", timeTextContainer).join("");
 
         if(helpers.recursiveSearchForKey("ownerText", obj).length > 0) {
             this.owner = new Channel(this.httpclient);
             this.owner.fromVideoRenderer(obj);
         }
+    }
+
+    fromVideoPlayerRenderer(obj: any) {
+        this.fromVideoRenderer(obj);
+
+        const timeTextContainer = helpers.recursiveSearchForKey("publishedTimeText", obj)[0];
+        if(timeTextContainer)
+            this.publishedText = helpers.recursiveSearchForKey("text", timeTextContainer).join("");
+
+        const descriptionContainer = helpers.recursiveSearchForKey("description", obj)[0];
+        if(descriptionContainer) {
+            this.description = helpers.recursiveSearchForKey("text", descriptionContainer).join("");
+        }
+
+        this.thumbnails = [helpers.getVideoDefaultThumbnail(this.videoId)];
     }
 
     fromGridRenderer(obj:any) {

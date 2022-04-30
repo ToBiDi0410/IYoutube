@@ -1,4 +1,4 @@
-import { ContinuatedList, Thumbnail, Badge, WrappedHTTPClient } from "../main";
+import { ContinuatedList, Thumbnail, Badge, Video, WrappedHTTPClient } from "../main";
 import { ChannelLink } from "./ChannelLink";
 export declare class Channel {
     #private;
@@ -19,6 +19,7 @@ export declare class Channel {
     joinDate?: Date;
     channelLinks?: Array<ChannelLink>;
     otherChannels?: Array<Channel>;
+    featuredVideo?: Video;
     httpclient: WrappedHTTPClient;
     constructor(httpclient: WrappedHTTPClient);
     fromVideoRenderer(obj: any): void;
@@ -31,6 +32,7 @@ export declare class Channel {
     fromCommentRenderer(obj: any): void;
     fromPlayerMicroRenderer(obj: any): void;
     loadAll(): Promise<void>;
+    loadDetailsFromOverviewPage(): Promise<void>;
     loadDetailsFromAboutPage(): Promise<void>;
     loadDetailsFromChannelsPages(): Promise<void>;
     getUploadList(): ContinuatedList;

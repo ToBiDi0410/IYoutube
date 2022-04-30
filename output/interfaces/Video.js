@@ -44,11 +44,22 @@ class Video {
             this.richThumbnails = helpers_1.default.recursiveSearchForKey("thumbnails", richThumbnailContainer)[0];
         const timeTextContainer = helpers_1.default.recursiveSearchForKey("publishedTimeText", obj)[0];
         if (timeTextContainer)
-            this.publishedText = helpers_1.default.recursiveSearchForKey("simpleText", timeTextContainer)[0];
+            this.publishedText = helpers_1.default.recursiveSearchForKey("simpleText", timeTextContainer).join("");
         if (helpers_1.default.recursiveSearchForKey("ownerText", obj).length > 0) {
             this.owner = new main_1.Channel(this.httpclient);
             this.owner.fromVideoRenderer(obj);
         }
+    }
+    fromVideoPlayerRenderer(obj) {
+        this.fromVideoRenderer(obj);
+        const timeTextContainer = helpers_1.default.recursiveSearchForKey("publishedTimeText", obj)[0];
+        if (timeTextContainer)
+            this.publishedText = helpers_1.default.recursiveSearchForKey("text", timeTextContainer).join("");
+        const descriptionContainer = helpers_1.default.recursiveSearchForKey("description", obj)[0];
+        if (descriptionContainer) {
+            this.description = helpers_1.default.recursiveSearchForKey("text", descriptionContainer).join("");
+        }
+        this.thumbnails = [helpers_1.default.getVideoDefaultThumbnail(this.videoId)];
     }
     fromGridRenderer(obj) {
         this.fromVideoRenderer(obj);

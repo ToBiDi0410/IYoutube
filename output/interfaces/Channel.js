@@ -129,8 +129,37 @@ class Channel {
     }
     loadAll() {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadDetailsFromOverviewPage();
             yield this.loadDetailsFromAboutPage();
             yield this.loadDetailsFromChannelsPages();
+        });
+    }
+    loadDetailsFromOverviewPage() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const channelOverview = yield this.httpclient.request({
+                method: HTTPClient_1.HTTPRequestMethod.POST,
+                url: constants_1.ENDPOINT_BROWSE,
+                data: {
+                    browseId: this.channelId,
+                }
+            });
+            const overviewJSON = yield JSON.parse(channelOverview.data);
+            __classPrivateFieldGet(this, _Channel_instances, "m", _Channel_parseC4FromHeader).call(this, overviewJSON);
+            let overviewTabRenderer = helpers_1.default.recursiveSearchForKey("tabRenderer", overviewJSON);
+            overviewTabRenderer = overviewTabRenderer.find((a) => a.title.toLowerCase() == "home");
+            const featuredRenderer = helpers_1.default.recursiveSearchForKey("channelFeaturedContentRenderer", overviewTabRenderer)[0];
+            if (featuredRenderer) {
+                const videoRenderer = helpers_1.default.recursiveSearchForKey("videoRenderer", featuredRenderer)[0];
+                if (videoRenderer) {
+                    this.featuredVideo = new main_1.Video(this.httpclient);
+                    this.featuredVideo.fromVideoRenderer(videoRenderer);
+                }
+            }
+            const videoPlayerRenderer = helpers_1.default.recursiveSearchForKey("channelVideoPlayerRenderer", overviewTabRenderer)[0];
+            if (videoPlayerRenderer) {
+                this.featuredVideo = new main_1.Video(this.httpclient);
+                this.featuredVideo.fromVideoPlayerRenderer(videoPlayerRenderer);
+            }
         });
     }
     loadDetailsFromAboutPage() {

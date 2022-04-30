@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getVideoDefaultThumbnail = void 0;
 const Channel_1 = require("../interfaces/Channel");
 const Playlist_1 = require("../interfaces/Playlist");
 const Video_1 = require("../interfaces/Video");
@@ -111,9 +112,18 @@ function processRendererItems(arr, httpclient) {
     processedList = processedList.filter((a) => { return a != undefined; });
     return processedList;
 }
+function getVideoDefaultThumbnail(videoId) {
+    return {
+        url: "https://i.ytimg.com/vi/" + videoId + "/maxresdefault.jpg",
+        height: 1,
+        width: 1
+    };
+}
+exports.getVideoDefaultThumbnail = getVideoDefaultThumbnail;
 exports.default = {
     recursiveSearchForPair: recursiveSearchForPair,
     recursiveSearchForKey: recursiveSearchForKey,
     getNumberFromText: getNumberFromText,
-    processRendererItems: processRendererItems
+    processRendererItems: processRendererItems,
+    getVideoDefaultThumbnail: getVideoDefaultThumbnail
 };

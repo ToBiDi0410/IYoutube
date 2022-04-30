@@ -1,5 +1,5 @@
 import { ENDPOINT_BROWSE, ENDPOINT_SUBSCRIBE, ENDPOINT_UNSUBSCRIBE } from "../constants";
-import { ContinuatedList, Thumbnail, Badge, WrappedHTTPClient  } from "../main";
+import { ContinuatedList, Thumbnail, Badge, Video, WrappedHTTPClient  } from "../main";
 import helpers from "../fetchers/helpers"
 import { HTTPRequestMethod } from "./HTTPClient";
 import { ChannelLink } from "./ChannelLink";
@@ -23,6 +23,7 @@ export class Channel {
     joinDate?: Date;
     channelLinks?: Array<ChannelLink>;
     otherChannels?: Array<Channel>;
+    featuredVideo?: Video;
 
     httpclient: WrappedHTTPClient;
 
@@ -161,8 +162,39 @@ export class Channel {
     }
 
     async loadAll() {
+        await this.loadDetailsFromOverviewPage();
         await this.loadDetailsFromAboutPage();
         await this.loadDetailsFromChannelsPages();
+    }
+
+    async loadDetailsFromOverviewPage() {
+        const channelOverview = await this.httpclient.request({
+            method: HTTPRequestMethod.POST,
+            url: ENDPOINT_BROWSE,
+            data: {
+                browseId: this.channelId,
+            }
+        });
+        const overviewJSON = await JSON.parse(channelOverview.data);
+        this.#parseC4FromHeader(overviewJSON);        
+
+        let overviewTabRenderer = helpers.recursiveSearchForKey("tabRenderer", overviewJSON);
+        overviewTabRenderer = overviewTabRenderer.find((a:any) => a.title.toLowerCase() == "home");
+
+        const featuredRenderer = helpers.recursiveSearchForKey("channelFeaturedContentRenderer", overviewTabRenderer)[0];
+        if(featuredRenderer) {
+            const videoRenderer = helpers.recursiveSearchForKey("videoRenderer", featuredRenderer)[0];
+            if(videoRenderer) {
+                this.featuredVideo = new Video(this.httpclient);
+                this.featuredVideo.fromVideoRenderer(videoRenderer);
+            }
+        }
+
+        const videoPlayerRenderer = helpers.recursiveSearchForKey("channelVideoPlayerRenderer", overviewTabRenderer)[0];
+        if(videoPlayerRenderer) {
+            this.featuredVideo = new Video(this.httpclient);
+            this.featuredVideo.fromVideoPlayerRenderer(videoPlayerRenderer);
+        }
     }
 
     async loadDetailsFromAboutPage() {

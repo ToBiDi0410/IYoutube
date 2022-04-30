@@ -25,6 +25,7 @@ export declare class Video {
     error: boolean;
     constructor(httpclient: WrappedHTTPClient);
     fromVideoRenderer(obj: any): void;
+    fromVideoPlayerRenderer(obj: any): void;
     fromGridRenderer(obj: any): void;
     fromPlaylistVideoRenderer(obj: any): void;
     loadAll(): Promise<void>;
