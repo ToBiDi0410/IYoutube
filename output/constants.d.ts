@@ -61,4 +61,5 @@ export declare const ENDPOINT_NEXT = "https://www.youtube.com/youtubei/v1/next";
 export declare const ENDPOINT_COMMENT_ACTION = "https://www.youtube.com/youtubei/v1/comment/perform_comment_action";
 export declare const ENDPOINT_PLAYER = "https://www.youtube.com/youtubei/v1/player";
 export declare const ENDPOINT_COMMENT_CREATE = "https://www.youtube.com/youtubei/v1/comment/create_comment";
+export declare const ENDPOINT_SEARCH_SUGGEST = "https://clients1.google.com/complete/search";
 export declare const ERROR_DATA_INVALID_FORMAT: Error;

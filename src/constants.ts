@@ -65,6 +65,7 @@ export const ENDPOINT_NEXT = "https://www.youtube.com/youtubei/v1/next";
 export const ENDPOINT_COMMENT_ACTION = "https://www.youtube.com/youtubei/v1/comment/perform_comment_action";
 export const ENDPOINT_PLAYER = "https://www.youtube.com/youtubei/v1/player";
 export const ENDPOINT_COMMENT_CREATE = "https://www.youtube.com/youtubei/v1/comment/create_comment";
+export const ENDPOINT_SEARCH_SUGGEST = "https://clients1.google.com/complete/search";
 
 /* Error */
 export const ERROR_DATA_INVALID_FORMAT = new Error("The Data recieved from the Google API seems to have an invalid format. It might be that Google updated their APIs and this Method no longer Works");

@@ -8,8 +8,8 @@ import { Explorer } from "./fetchers/Explorer";
 import { ContinuatedList } from "./fetchers/ContinuatedList";
 import { User } from "./fetchers/User";
 import { Playlist } from "./interfaces/Playlist";
-import { DEBUG, ENDPOINT_BROWSE } from "./constants";
-import { Channel, Video } from "./main";
+import { DEBUG, ENDPOINT_BROWSE, ENDPOINT_SEARCH_SUGGEST } from "./constants";
+import { Channel, SearchProposal, Video } from "./main";
 import helpers from "./fetchers/helpers";
 
 export default class IYoutube {
@@ -44,6 +44,25 @@ export default class IYoutube {
         this.throwErrorIfNotReady();
         var list = new SearchConitinuatedList(term, type, this.wrappedHttpClient);
         return list;
+    }
+
+    async searchProposals(term: string):Promise<Array<SearchProposal>> {
+        this.throwErrorIfNotReady();
+        const url = new URL(ENDPOINT_SEARCH_SUGGEST);
+        url.searchParams.set("client", "youtube");
+        url.searchParams.set("gs_ri", "youtube");
+        url.searchParams.set("ds", "yt");
+        url.searchParams.set("q", term);
+
+        const result = await this.rawHttpClient.request({
+            url: url.toString(),
+            method: HTTPRequestMethod.GET,
+        });
+
+        const resultJSONText = result.data.split("(")[1].split(")")[0];
+        const resultsJSON = await JSON.parse(resultJSONText)[1];
+        const finalResults = resultsJSON.map((a:any) => ({ text: a[0] }));
+        return finalResults;
     }
 
     async getPlaylist(playlistId: string):Promise<Playlist> {

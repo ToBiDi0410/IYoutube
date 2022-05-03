@@ -131,11 +131,10 @@ export function getVideoDefaultThumbnail(videoId:string) {
         width: 1
     }
 }
-
 export default {
     recursiveSearchForPair: recursiveSearchForPair,
     recursiveSearchForKey: recursiveSearchForKey,
     getNumberFromText: getNumberFromText,
     processRendererItems: processRendererItems,
-    getVideoDefaultThumbnail: getVideoDefaultThumbnail
+    getVideoDefaultThumbnail: getVideoDefaultThumbnail,
 }

@@ -125,5 +125,5 @@ exports.default = {
     recursiveSearchForKey: recursiveSearchForKey,
     getNumberFromText: getNumberFromText,
     processRendererItems: processRendererItems,
-    getVideoDefaultThumbnail: getVideoDefaultThumbnail
+    getVideoDefaultThumbnail: getVideoDefaultThumbnail,
 };

@@ -7,7 +7,7 @@ import { Explorer } from "./fetchers/Explorer";
 import { ContinuatedList } from "./fetchers/ContinuatedList";
 import { User } from "./fetchers/User";
 import { Playlist } from "./interfaces/Playlist";
-import { Channel, Video } from "./main";
+import { Channel, SearchProposal, Video } from "./main";
 export default class IYoutube {
     rawHttpClient: HTTPClient;
     wrappedHttpClient: WrappedHTTPClient;
@@ -18,6 +18,7 @@ export default class IYoutube {
     constructor(httpClient: HTTPClient, storageAdapater: StorageAdapter);
     init(): Promise<void>;
     search(term: string, type: SearchType): Promise<ContinuatedList>;
+    searchProposals(term: string): Promise<Array<SearchProposal>>;
     getPlaylist(playlistId: string): Promise<Playlist>;
     getChannel(channelId: string): Promise<Channel>;
     getVideo(videoId: string): Promise<Video>;

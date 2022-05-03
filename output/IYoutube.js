@@ -44,6 +44,24 @@ class IYoutube {
             return list;
         });
     }
+    searchProposals(term) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.throwErrorIfNotReady();
+            const url = new URL(constants_1.ENDPOINT_SEARCH_SUGGEST);
+            url.searchParams.set("client", "youtube");
+            url.searchParams.set("gs_ri", "youtube");
+            url.searchParams.set("ds", "yt");
+            url.searchParams.set("q", term);
+            const result = yield this.rawHttpClient.request({
+                url: url.toString(),
+                method: HTTPClient_1.HTTPRequestMethod.GET,
+            });
+            const resultJSONText = result.data.split("(")[1].split(")")[0];
+            const resultsJSON = yield JSON.parse(resultJSONText)[1];
+            const finalResults = resultsJSON.map((a) => ({ text: a[0] }));
+            return finalResults;
+        });
+    }
     getPlaylist(playlistId) {
         return __awaiter(this, void 0, void 0, function* () {
             this.throwErrorIfNotReady();
