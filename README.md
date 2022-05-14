@@ -24,20 +24,20 @@
 ###### Please look at the Basic [Example](./test/test.js)
 
 #### To-Do
-I will do my best to keep up the work on this Project, any Pull Requests or contributions in any way (e.g feature suggestions) are welcome.  
+I will do my best to keep up the work on this project, any pull requests or contributions in any way (e.g feature suggestions) are welcome.  
 
 [Current Todo List](./todo.md)
 
 <b>This API was originally designed for [IonicTube](https://github.com/ToBiDi0410/IonicTube) (an alternative YT App)</b>
 #### Credits
-- Authentication Method: https://github.com/pytube/pytube
-- Consent Confirmation: https://github.com/ytdl-org/youtube-dl/
-- Visual Studio Code for Development: https://code.visualstudio.com/
-- Google for their API and Chrome Dev Tools to analyse it :)
-- @appit-online for the Deciphering Code (from: https://github.com/appit-online/ionic-youtube-streams)
+- @pytube for the authentication method: https://github.com/pytube/pytube
+- @ytdl-org for the consent confirmation: https://github.com/ytdl-org/youtube-dl/
+- @Microsoft with Visual Studio Code for development: https://code.visualstudio.com/
+- @Google for their API and Chrome Dev Tools to analyse it :)
+- @TeamNewPipe for the signature code (from: https://github.com/TeamNewPipe/NewPipeExtractor)
 
 #### Disclaimers
 - This project is not affiliated or linked to Google/YouTube in any way
-- This project does not contain any unofficial Source Code
+- This project does not contain any unofficial source code
 - This project is created for educational use only!
 - All mentioned brands and trademarks (e.g "Google" & "YouTube") are the property of their lawful owners
