@@ -50,11 +50,8 @@ function getNumberFromText(str: string):number {
     return number;
 }
 
-function replaceAll(regex:string, value: string, source:string) {
-    while(source.includes(regex)) {
-        source = source.replace(regex, value);
-    }
-    return source;
+function replaceAll(search:string, value: string, source:string) {
+    return source.replace(new RegExp(search, 'g'), value);
 }
 
 function processRendererItems(arr : Array<any>, httpclient: WrappedHTTPClient) {
@@ -124,17 +121,30 @@ function processRendererItems(arr : Array<any>, httpclient: WrappedHTTPClient) {
     return processedList;
 }
 
-export function getVideoDefaultThumbnail(videoId:string) {
+function getVideoDefaultThumbnail(videoId:string) {
     return {
         url: "https://i.ytimg.com/vi/" + videoId + "/maxresdefault.jpg",
         height: 1,
         width: 1
     }
 }
+
+function getIndexBefore(str: string, index: number, source: string) {
+    var before = source.substring(0, index);
+    return before.lastIndexOf(str);
+}
+
+function getIndexAfter(str: string, index: number, source: string) {
+    var after = source.substring(index, source.length);
+    return index + after.indexOf(str);
+}
 export default {
-    recursiveSearchForPair: recursiveSearchForPair,
-    recursiveSearchForKey: recursiveSearchForKey,
-    getNumberFromText: getNumberFromText,
-    processRendererItems: processRendererItems,
-    getVideoDefaultThumbnail: getVideoDefaultThumbnail,
+    recursiveSearchForPair,
+    recursiveSearchForKey,
+    getNumberFromText,
+    processRendererItems,
+    getVideoDefaultThumbnail,
+    replaceAll,
+    getIndexAfter,
+    getIndexBefore
 }

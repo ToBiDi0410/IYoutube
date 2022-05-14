@@ -109,6 +109,9 @@ class IYoutube {
     getUser() {
         return this.user;
     }
+    getCookies() {
+        return this.wrappedHttpClient.cookieString;
+    }
     throwErrorIfNotReady() {
         if (!this.storageAdapter)
             throw new Error("The provided Storage Adapter was invalid");

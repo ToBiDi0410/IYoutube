@@ -19,6 +19,7 @@ import { List } from "./interfaces/List";
 import { SearchProposal } from "./interfaces/SearchProposal";
 import { Format } from "./interfaces/Format";
 import { default as IYoutube } from "./IYoutube";
+import { HTTPRequestOptions, HTTPRequestMethod, HTTPResponse } from "./interfaces/HTTPClient";
 
 
 export { IYoutube as IYoutube }
@@ -44,6 +45,9 @@ export { CaptionTrack as CaptionTrack }
 export { List as List }
 export { SearchProposal as SearchProposal }
 export { Format as Format }
+export { HTTPRequestMethod as HTTPRequestMethod }
+export { HTTPRequestOptions as HTTPRequestOptions }
+export { HTTPResponse as HTTPResponse }
 
 //Skips Webpack checks
 export const nodeDefault = async ():Promise<IYoutube> => {

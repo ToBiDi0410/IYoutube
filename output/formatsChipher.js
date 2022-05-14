@@ -9,182 +9,67 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CiphService = void 0;
-const url = require("url");
-const querystring = require("querystring");
+exports.decipher = void 0;
+const helpers_1 = require("./fetchers/helpers");
 const HTTPClient_1 = require("./interfaces/HTTPClient");
-const jsVarStr = '[a-zA-Z_\\$][a-zA-Z_0-9]*';
-const jsSingleQuoteStr = `'[^'\\\\]*(:?\\\\[\\s\\S][^'\\\\]*)*'`;
-const jsDoubleQuoteStr = `"[^"\\\\]*(:?\\\\[\\s\\S][^"\\\\]*)*"`;
-const jsQuoteStr = `(?:${jsSingleQuoteStr}|${jsDoubleQuoteStr})`;
-const jsKeyStr = `(?:${jsVarStr}|${jsQuoteStr})`;
-const jsPropStr = `(?:\\.${jsVarStr}|\\[${jsQuoteStr}\\])`;
-const jsEmptyStr = `(?:''|"")`;
-const reverseStr = ':function\\(a\\)\\{' +
-    '(?:return )?a\\.reverse\\(\\)' +
-    '\\}';
-const sliceStr = ':function\\(a,b\\)\\{' +
-    'return a\\.slice\\(b\\)' +
-    '\\}';
-const spliceStr = ':function\\(a,b\\)\\{' +
-    'a\\.splice\\(0,b\\)' +
-    '\\}';
-const swapStr = ':function\\(a,b\\)\\{' +
-    'var c=a\\[0\\];a\\[0\\]=a\\[b(?:%a\\.length)?\\];a\\[b(?:%a\\.length)?\\]=c(?:;return a)?' +
-    '\\}';
-const actionsObjRegexp = new RegExp(`var (${jsVarStr})=\\{((?:(?:` +
-    jsKeyStr + reverseStr + '|' +
-    jsKeyStr + sliceStr + '|' +
-    jsKeyStr + spliceStr + '|' +
-    jsKeyStr + swapStr +
-    '),?\\r?\\n?)+)\\};');
-const actionsFuncRegexp = new RegExp(`function(?: ${jsVarStr})?\\(a\\)\\{` +
-    `a=a\\.split\\(${jsEmptyStr}\\);\\s*` +
-    `((?:(?:a=)?${jsVarStr}` +
-    jsPropStr +
-    '\\(a,\\d+\\);)+)' +
-    `return a\\.join\\(${jsEmptyStr}\\)` +
-    '\\}');
-const reverseRegexp = new RegExp(`(?:^|,)(${jsKeyStr})${reverseStr}`, 'm');
-const sliceRegexp = new RegExp(`(?:^|,)(${jsKeyStr})${sliceStr}`, 'm');
-const spliceRegexp = new RegExp(`(?:^|,)(${jsKeyStr})${spliceStr}`, 'm');
-const swapRegexp = new RegExp(`(?:^|,)(${jsKeyStr})${swapStr}`, 'm');
-class CiphService {
-    constructor(httpClient) {
-        this.httpClient = httpClient;
-        this.cache = new Map();
-        this.decipher = (tokens, sig) => {
-            sig = sig.split('');
-            for (let i = 0, len = tokens.length; i < len; i++) {
-                let token = tokens[i], pos;
-                switch (token[0]) {
-                    case 'r':
-                        sig = sig.reverse();
-                        break;
-                    case 'w':
-                        pos = ~~token.slice(1);
-                        const first = sig[0];
-                        sig[0] = sig[pos % sig.length];
-                        sig[pos] = first;
-                        break;
-                    case 's':
-                        pos = ~~token.slice(1);
-                        sig = sig.slice(pos);
-                        break;
-                    case 'p':
-                        pos = ~~token.slice(1);
-                        sig.splice(0, pos);
-                        break;
-                }
-            }
-            return sig.join('');
-        };
-    }
-    getTokens(html5playerfile, options) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const cachedTokens = this.cache.get(html5playerfile);
-            const response = yield this.httpClient.request({
-                method: HTTPClient_1.HTTPRequestMethod.GET,
-                url: html5playerfile
-            });
-            const tokens = this.extractActions(response.data);
-            if (!tokens || !tokens.length) {
-                throw new Error('Could not extract signature deciphering actions');
-            }
-            this.cache.set(html5playerfile, tokens);
-            return tokens;
+const REGEXES = [
+    new RegExp("(?:\\b|[^a-zA-Z0-9$])([a-zA-Z0-9$]{2,})\\s*=\\s*function\\(\\s*a\\s*\\)" + "\\s*\\{\\s*a\\s*=\\s*a\\.split\\(\\s*\"\"\\s*\\)"),
+    new RegExp("\\bm=([a-zA-Z0-9$]{2,})\\(decodeURIComponent\\(h\\.s\\)\\)"),
+    new RegExp("\\bc&&\\(c=([a-zA-Z0-9$]{2,})\\(decodeURIComponent\\(c\\)\\)"),
+    new RegExp("([\\w$]+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;"),
+    new RegExp("\\b([\\w$]{2,})\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;"),
+    new RegExp("\\bc\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*(:encodeURIComponent\\s*\\()([a-zA-Z0-9$]+)\\(")
+];
+function decipher(formats, playerURL, httpClient) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const playerResults = yield httpClient.request({
+            method: HTTPClient_1.HTTPRequestMethod.GET,
+            url: playerURL
         });
-    }
-    extractActions(body) {
-        const objResult = actionsObjRegexp.exec(body);
-        const funcResult = actionsFuncRegexp.exec(body);
-        if (!objResult || !funcResult) {
-            return null;
-        }
-        const obj = objResult[1].replace(/\$/g, '\\$');
-        const objBody = objResult[2].replace(/\$/g, '\\$');
-        const funcBody = funcResult[1].replace(/\$/g, '\\$');
-        let result = reverseRegexp.exec(objBody);
-        const reverseKey = result && result[1]
-            .replace(/\$/g, '\\$')
-            .replace(/\$|^'|^"|'$|"$/g, '');
-        result = sliceRegexp.exec(objBody);
-        const sliceKey = result && result[1]
-            .replace(/\$/g, '\\$')
-            .replace(/\$|^'|^"|'$|"$/g, '');
-        result = spliceRegexp.exec(objBody);
-        const spliceKey = result && result[1]
-            .replace(/\$/g, '\\$')
-            .replace(/\$|^'|^"|'$|"$/g, '');
-        result = swapRegexp.exec(objBody);
-        const swapKey = result && result[1]
-            .replace(/\$/g, '\\$')
-            .replace(/\$|^'|^"|'$|"$/g, '');
-        const keys = `(${[reverseKey, sliceKey, spliceKey, swapKey].join('|')})`;
-        const myreg = '(?:a=)?' + obj +
-            `(?:\\.${keys}|\\['${keys}'\\]|\\["${keys}"\\])` +
-            '\\(a,(\\d+)\\)';
-        const tokenizeRegexp = new RegExp(myreg, 'g');
-        const tokens = [];
-        while ((result = tokenizeRegexp.exec(funcBody)) !== null) {
-            const key = result[1] || result[2] || result[3];
-            switch (key) {
-                case swapKey:
-                    tokens.push('w' + result[4]);
-                    break;
-                case reverseKey:
-                    tokens.push('r');
-                    break;
-                case sliceKey:
-                    tokens.push('s' + result[4]);
-                    break;
-                case spliceKey:
-                    tokens.push('p' + result[4]);
-                    break;
+        const playerJS = playerResults.data;
+        let deobfuscateFunctionName = "";
+        for (const reg of REGEXES) {
+            deobfuscateFunctionName = matchGroup1(reg, playerJS);
+            if (deobfuscateFunctionName) {
+                break;
             }
         }
-        return tokens;
-    }
-    decipherFormats(formats, html5player, options) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const decipheredFormats = [];
-            const tokens = yield this.getTokens(html5player, options);
-            formats.forEach((format) => {
-                const cipher = format.signatureCipher || format.cipher;
-                if (cipher) {
-                    Object.assign(format, querystring.parse(cipher));
-                    delete format.signatureCipher;
-                    delete format.cipher;
-                }
-                const sig = tokens && format.s ? this.decipher(tokens, format.s) : null;
-                this.setDownloadURL(format, sig);
-                decipheredFormats.push(format);
-            });
-            return decipheredFormats;
-        });
-    }
-    setDownloadURL(format, sig) {
-        let decodedUrl;
-        if (format.url) {
-            decodedUrl = format.url;
+        const functionPattern = new RegExp("(" + deobfuscateFunctionName.replace("$", "\\$") + "=function\\([a-zA-Z0-9_]+\\)\\{.+?\\})");
+        const deobfuscateFunction = "var " + matchGroup1(functionPattern, playerJS) + ";";
+        const helperObjectName = matchGroup1(new RegExp(";([A-Za-z0-9_\\$]{2})\\...\\("), deobfuscateFunction);
+        const helperPattern = new RegExp("(var " + helperObjectName + "=\\{.+?\\}\\};)");
+        const helperObject = matchGroup1(helperPattern, helpers_1.default.replaceAll("\n", "", playerJS));
+        const finalFunc = eval(`(function getDecipherFunction() {
+    ` + helperObject + `
+    ` + deobfuscateFunction + `
+
+    return (val) => ` + deobfuscateFunctionName + `;
+  })()`)();
+        for (const format of formats) {
+            if (format.signatureCipher) {
+                const signatureParams = parseQuery(format.signatureCipher);
+                const resolvedSignature = finalFunc(signatureParams.s);
+                const finalURL = new URL(signatureParams.url);
+                finalURL.searchParams.set(signatureParams.sp, resolvedSignature);
+                format.url = finalURL.toString();
+            }
         }
-        else {
-            return;
-        }
-        try {
-            decodedUrl = decodeURIComponent(decodedUrl);
-        }
-        catch (err) {
-            return;
-        }
-        const parsedUrl = url.parse(decodedUrl, true);
-        delete parsedUrl.search;
-        const query = parsedUrl.query;
-        query.ratebypass = 'yes';
-        if (sig) {
-            query[format.sp || 'signature'] = sig;
-        }
-        format.url = url.format(parsedUrl);
-    }
+        return formats;
+    });
 }
-exports.CiphService = CiphService;
+exports.decipher = decipher;
+function matchGroup1(regex, str) {
+    const res = regex.exec(str);
+    if (!res)
+        return "";
+    return res[1];
+}
+function parseQuery(queryString) {
+    var query = {};
+    var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+    for (var i = 0; i < pairs.length; i++) {
+        var pair = pairs[i].split('=');
+        query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+    }
+    return query;
+}

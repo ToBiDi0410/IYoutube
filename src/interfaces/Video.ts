@@ -1,8 +1,8 @@
-import { ENDPOINT_COMMENT_CREATE, ENDPOINT_DISLIKE, ENDPOINT_LIKE, ENDPOINT_NEXT, ENDPOINT_PLAYER, ENDPOINT_REMOVELIKE, ENDPOINT_WATCHPAGE } from "../constants";
+import { DEFAULT_CLIENT_VERSION, DEFAULT_USER_AGENT, ENDPOINT_COMMENT_CREATE, ENDPOINT_DISLIKE, ENDPOINT_LIKE, ENDPOINT_NEXT, ENDPOINT_PLAYER, ENDPOINT_REMOVELIKE, ENDPOINT_WATCHPAGE } from "../constants";
 import helpers from "../fetchers/helpers";
 import { CommentSectionContinuatedList, ContinuatedList, WrappedHTTPClient, Channel, Thumbnail, CaptionTrack, CommentThread, Format } from "../main";
 import { HTTPRequestMethod } from "./HTTPClient";
-import { CiphService } from "../formatsChipher";
+import * as formatsChipher from "../formatsChipher";
 
 export class Video {
 
@@ -233,49 +233,38 @@ export class Video {
             }
         }
 
+        await this.loadFormats();
     }
 
     async loadFormats() {
-        const playerResponse = await this.httpclient.request({
-            method: HTTPRequestMethod.POST,
-            url: ENDPOINT_PLAYER,
-            data: {
-                videoId: this.videoId,
-                racyCheckOk: false,
-                contentCheckOk: false,
-                playbackContext: {
-                    contentPlaybackContent: {
-                        currentUrl: "/watch?v=6Dh-RL__uN4",
-                        autonavState: "STATE_OFF",
-                        autoCaptionsDefaultOn: false,
-                        html5Preference: "HTML5_PREF_WANTS",
-                        lactMilliseconds: "-1",
-                        referer: "https://www.youtube.com/",
-                        signatureTimestamp: 19095,
-                        splay: false,
-                        vis: 0
-                    }
-                }
-            }
-        });
-        const playerJSON = await JSON.parse(playerResponse.data);
-        const formats = helpers.recursiveSearchForKey("adaptiveFormats", playerJSON)[0];
-
         const watchURL = new URL(ENDPOINT_WATCHPAGE);
         watchURL.searchParams.set("v", this.videoId);
 
-        const playPage = await this.httpclient.request({
+        const playPage = await this.httpclient.client.request({
             method: HTTPRequestMethod.GET,
-            url: watchURL.toString()
+            url: watchURL.toString(),
+            headers: {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+            }
         });
 
         const html = playPage.data;
+
+        const varFind = html.indexOf("var ytInitialPlayerResponse ="); //Locate the Var Definition
+        const scriptStart = helpers.getIndexAfter(">", helpers.getIndexBefore("<script", varFind, html), html) + 1; //Get Script Tag Before
+        const scriptEnd = helpers.getIndexAfter("</script>", varFind, html); //Get Script Tag After
+        const script = html.substring(scriptStart, scriptEnd); //Get Script (between both Tags)
+
+        const scriptFunc = new Function(script + " return ytInitialPlayerResponse;"); //Parse the Functions Inside
+        const playerJSON = scriptFunc(); //Get the Information
+
+        const formats = helpers.recursiveSearchForKey("adaptiveFormats", playerJSON)[0];
+
         let playerScript:any = /<script\s+src="([^"]+)"(?:\s+type="text\/javascript")?\s+name="player_ias\/base"\s*>|"jsUrl":"([^"]+)"/.exec(html);
         playerScript = playerScript[2] || playerScript[1];
         const playerURLString = new URL(playerScript, watchURL).href;
 
-        const cipher = new CiphService(this.httpclient);
-        const resolvedFormats = await cipher.decipherFormats(formats, playerURLString, {});
+        const resolvedFormats = await formatsChipher.decipher(formats, playerURLString, this.httpclient);
         
         this.formats = [];
         resolvedFormats.forEach((a:any) => {

@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getVideoDefaultThumbnail = void 0;
 const Channel_1 = require("../interfaces/Channel");
 const Playlist_1 = require("../interfaces/Playlist");
 const Video_1 = require("../interfaces/Video");
@@ -48,11 +47,8 @@ function getNumberFromText(str) {
     }
     return number;
 }
-function replaceAll(regex, value, source) {
-    while (source.includes(regex)) {
-        source = source.replace(regex, value);
-    }
-    return source;
+function replaceAll(search, value, source) {
+    return source.replace(new RegExp(search, 'g'), value);
 }
 function processRendererItems(arr, httpclient) {
     let processedList = arr.map((elem) => {
@@ -119,11 +115,21 @@ function getVideoDefaultThumbnail(videoId) {
         width: 1
     };
 }
-exports.getVideoDefaultThumbnail = getVideoDefaultThumbnail;
+function getIndexBefore(str, index, source) {
+    var before = source.substring(0, index);
+    return before.lastIndexOf(str);
+}
+function getIndexAfter(str, index, source) {
+    var after = source.substring(index, source.length);
+    return index + after.indexOf(str);
+}
 exports.default = {
-    recursiveSearchForPair: recursiveSearchForPair,
-    recursiveSearchForKey: recursiveSearchForKey,
-    getNumberFromText: getNumberFromText,
-    processRendererItems: processRendererItems,
-    getVideoDefaultThumbnail: getVideoDefaultThumbnail,
+    recursiveSearchForPair,
+    recursiveSearchForKey,
+    getNumberFromText,
+    processRendererItems,
+    getVideoDefaultThumbnail,
+    replaceAll,
+    getIndexAfter,
+    getIndexBefore
 };

@@ -1,210 +1,73 @@
-//From https://github.com/appit-online/ionic-youtube-streams/blob/eeee1741857f06c81380c317bd6e71732c895ee1/src/lib/cip.service.ts#L53
-import * as url from 'url';
-import * as querystring from 'querystring';
-import { HTTPClient } from './main';
-import { HTTPRequestMethod } from './interfaces/HTTPClient';
+//Worked out from: https://github.com/TeamNewPipe/NewPipeExtractor
+import helpers from "./fetchers/helpers";
+import { HTTPRequestMethod } from "./interfaces/HTTPClient";
+import { WrappedHTTPClient } from "./WrappedHTTPClient";
 
-const jsVarStr = '[a-zA-Z_\\$][a-zA-Z_0-9]*';
-const jsSingleQuoteStr = `'[^'\\\\]*(:?\\\\[\\s\\S][^'\\\\]*)*'`;
-const jsDoubleQuoteStr = `"[^"\\\\]*(:?\\\\[\\s\\S][^"\\\\]*)*"`;
-const jsQuoteStr = `(?:${jsSingleQuoteStr}|${jsDoubleQuoteStr})`;
-const jsKeyStr = `(?:${jsVarStr}|${jsQuoteStr})`;
-const jsPropStr = `(?:\\.${jsVarStr}|\\[${jsQuoteStr}\\])`;
-const jsEmptyStr = `(?:''|"")`;
-const reverseStr = ':function\\(a\\)\\{' +
-  '(?:return )?a\\.reverse\\(\\)' +
-  '\\}';
-const sliceStr = ':function\\(a,b\\)\\{' +
-  'return a\\.slice\\(b\\)' +
-  '\\}';
-const spliceStr = ':function\\(a,b\\)\\{' +
-  'a\\.splice\\(0,b\\)' +
-  '\\}';
-const swapStr = ':function\\(a,b\\)\\{' +
-  'var c=a\\[0\\];a\\[0\\]=a\\[b(?:%a\\.length)?\\];a\\[b(?:%a\\.length)?\\]=c(?:;return a)?' +
-  '\\}';
-const actionsObjRegexp = new RegExp(
-  `var (${jsVarStr})=\\{((?:(?:` +
-  jsKeyStr + reverseStr + '|' +
-  jsKeyStr + sliceStr   + '|' +
-  jsKeyStr + spliceStr  + '|' +
-  jsKeyStr + swapStr +
-  '),?\\r?\\n?)+)\\};'
-);
-const actionsFuncRegexp = new RegExp(`function(?: ${jsVarStr})?\\(a\\)\\{` +
-  `a=a\\.split\\(${jsEmptyStr}\\);\\s*` +
-  `((?:(?:a=)?${jsVarStr}` +
-  jsPropStr +
-  '\\(a,\\d+\\);)+)' +
-  `return a\\.join\\(${jsEmptyStr}\\)` +
-  '\\}'
-);
-const reverseRegexp = new RegExp(`(?:^|,)(${jsKeyStr})${reverseStr}`, 'm');
-const sliceRegexp   = new RegExp(`(?:^|,)(${jsKeyStr})${sliceStr}`, 'm');
-const spliceRegexp  = new RegExp(`(?:^|,)(${jsKeyStr})${spliceStr}`, 'm');
-const swapRegexp    = new RegExp(`(?:^|,)(${jsKeyStr})${swapStr}`, 'm');
+const REGEXES = [
+  new RegExp("(?:\\b|[^a-zA-Z0-9$])([a-zA-Z0-9$]{2,})\\s*=\\s*function\\(\\s*a\\s*\\)" + "\\s*\\{\\s*a\\s*=\\s*a\\.split\\(\\s*\"\"\\s*\\)"),
+  new RegExp("\\bm=([a-zA-Z0-9$]{2,})\\(decodeURIComponent\\(h\\.s\\)\\)"),
+  new RegExp("\\bc&&\\(c=([a-zA-Z0-9$]{2,})\\(decodeURIComponent\\(c\\)\\)"),
+  new RegExp("([\\w$]+)\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;"),
+  new RegExp("\\b([\\w$]{2,})\\s*=\\s*function\\((\\w+)\\)\\{\\s*\\2=\\s*\\2\\.split\\(\"\"\\)\\s*;"),
+  new RegExp("\\bc\\s*&&\\s*d\\.set\\([^,]+\\s*,\\s*(:encodeURIComponent\\s*\\()([a-zA-Z0-9$]+)\\(")
+];
 
+export async function decipher(formats: Array<any>, playerURL: string, httpClient: WrappedHTTPClient) {
+  const playerResults = await httpClient.request({
+    method: HTTPRequestMethod.GET,
+    url: playerURL
+  });
 
-export class CiphService {
+  const playerJS = playerResults.data;
 
-  constructor(public httpClient: HTTPClient) {}
-
-  cache = new Map();
-
-  async getTokens(html5playerfile: any, options: any) {
-    const cachedTokens = this.cache.get(html5playerfile);
-    const response = await this.httpClient.request({
-        method: HTTPRequestMethod.GET,
-        url: html5playerfile
-    });
-    const tokens = this.extractActions(response.data);
-    if (!tokens || !tokens.length) {
-      throw new Error('Could not extract signature deciphering actions');
+  let deobfuscateFunctionName:any = "";
+  for(const reg of REGEXES) {
+    deobfuscateFunctionName = matchGroup1(reg, playerJS);
+    if(deobfuscateFunctionName) {
+      break;
     }
-
-    this.cache.set(html5playerfile, tokens);
-    return tokens;
   }
 
-  extractActions(body: any) {
-    const objResult = actionsObjRegexp.exec(body);
-    const funcResult = actionsFuncRegexp.exec(body);
-    if (!objResult || !funcResult) { return null; }
+  const functionPattern = new RegExp("(" + deobfuscateFunctionName.replace("$", "\\$") + "=function\\([a-zA-Z0-9_]+\\)\\{.+?\\})");
+  const deobfuscateFunction = "var " + matchGroup1(functionPattern, playerJS) + ";";
 
-    const obj      = objResult[1].replace(/\$/g, '\\$');
-    const objBody  = objResult[2].replace(/\$/g, '\\$');
-    const funcBody = funcResult[1].replace(/\$/g, '\\$');
+  const helperObjectName = matchGroup1(new RegExp(";([A-Za-z0-9_\\$]{2})\\...\\("), deobfuscateFunction);
+  const helperPattern = new RegExp("(var " + helperObjectName + "=\\{.+?\\}\\};)");
+  const helperObject = matchGroup1(helperPattern, helpers.replaceAll("\n", "", playerJS));
+  
+  const finalFunc = eval(`(function getDecipherFunction() {
+    ` + helperObject + `
+    ` + deobfuscateFunction + `
 
-    let result = reverseRegexp.exec(objBody);
-    const reverseKey = result && result[1]
-      .replace(/\$/g, '\\$')
-      .replace(/\$|^'|^"|'$|"$/g, '');
-    result = sliceRegexp.exec(objBody);
-    const sliceKey = result && result[1]
-      .replace(/\$/g, '\\$')
-      .replace(/\$|^'|^"|'$|"$/g, '');
-    result = spliceRegexp.exec(objBody);
-    const spliceKey = result && result[1]
-      .replace(/\$/g, '\\$')
-      .replace(/\$|^'|^"|'$|"$/g, '');
-    result = swapRegexp.exec(objBody);
-    const swapKey = result && result[1]
-      .replace(/\$/g, '\\$')
-      .replace(/\$|^'|^"|'$|"$/g, '');
+    return (val) => ` + deobfuscateFunctionName + `;
+  })()`)();
 
-    const keys = `(${[reverseKey, sliceKey, spliceKey, swapKey].join('|')})`;
-    const myreg = '(?:a=)?' + obj +
-      `(?:\\.${keys}|\\['${keys}'\\]|\\["${keys}"\\])` +
-      '\\(a,(\\d+)\\)';
-    const tokenizeRegexp = new RegExp(myreg, 'g');
-    const tokens = [];
-    // tslint:disable-next-line:no-conditional-assignment
-    while ((result = tokenizeRegexp.exec(funcBody)) !== null) {
-      const key = result[1] || result[2] || result[3];
-      switch (key) {
-        case swapKey:
-          tokens.push('w' + result[4]);
-          break;
-        case reverseKey:
-          tokens.push('r');
-          break;
-        case sliceKey:
-          tokens.push('s' + result[4]);
-          break;
-        case spliceKey:
-          tokens.push('p' + result[4]);
-          break;
-      }
+  for(const format of formats) {
+    if(format.signatureCipher) {
+      const signatureParams = parseQuery(format.signatureCipher);
+      const resolvedSignature = finalFunc(signatureParams.s);
+      const finalURL = new URL(signatureParams.url);
+      finalURL.searchParams.set(signatureParams.sp, resolvedSignature)
+      format.url = finalURL.toString();
     }
-    return tokens;
   }
 
+  return formats;
+}
 
 
-  async decipherFormats(formats: any, html5player: any, options: any) {
-    const decipheredFormats: any = [];
-    const tokens = await this.getTokens(html5player, options);
+function matchGroup1(regex: RegExp, str: string) {
+  const res = regex.exec(str);
+  if(!res) return "";
+  return res[1];
+}
 
-    formats.forEach((format: any) => {
-      const cipher = format.signatureCipher || format.cipher;
-      if (cipher) {
-        Object.assign(format, querystring.parse(cipher));
-        delete format.signatureCipher;
-        delete format.cipher;
-      }
-      const sig = tokens && format.s ? this.decipher(tokens, format.s) : null;
-      this.setDownloadURL(format, sig);
-      decipheredFormats.push(format);
-    });
-
-    return decipheredFormats;
+function parseQuery(queryString:string) {
+  var query:any = {};
+  var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+  for (var i = 0; i < pairs.length; i++) {
+      var pair = pairs[i].split('=');
+      query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
   }
-
-  decipher = (tokens: any, sig: any) => {
-    sig = sig.split('');
-    for (let i = 0, len = tokens.length; i < len; i++) {
-      // tslint:disable-next-line:prefer-const one-variable-per-declaration
-      let token = tokens[i], pos;
-      switch (token[0]) {
-        case 'r':
-          sig = sig.reverse();
-          break;
-        case 'w':
-          // tslint:disable-next-line:no-bitwise
-          pos = ~~token.slice(1);
-          const first = sig[0];
-          sig[0] = sig[pos % sig.length];
-          sig[pos] = first;
-          break;
-        case 's':
-          // tslint:disable-next-line:no-bitwise
-          pos = ~~token.slice(1);
-          sig = sig.slice(pos);
-          break;
-        case 'p':
-          // tslint:disable-next-line:no-bitwise
-          pos = ~~token.slice(1);
-          sig.splice(0, pos);
-          break;
-      }
-    }
-    return sig.join('');
-  }
-
-  setDownloadURL(format: any, sig: any) {
-    let decodedUrl;
-    if (format.url) {
-      decodedUrl = format.url;
-    } else {
-      return;
-    }
-
-    try {
-      decodedUrl = decodeURIComponent(decodedUrl);
-    } catch (err) {
-      return;
-    }
-
-    // Make some adjustments to the final url.
-    const parsedUrl = url.parse(decodedUrl, true);
-
-    // Deleting the `search` part is necessary otherwise changes to
-    // `query` won't reflect when running `url.format()`
-    // @ts-ignore
-    delete parsedUrl.search;
-
-    const query = parsedUrl.query;
-
-    // This is needed for a speedier download.
-    // See https://github.com/fent/node-ytdl-core/issues/127
-    query.ratebypass = 'yes';
-    if (sig) {
-      // When YouTube provides a `sp` parameter the signature `sig` must go
-      // into the parameter it specifies.
-      // See https://github.com/fent/node-ytdl-core/issues/417
-      query[format.sp || 'signature'] = sig;
-    }
-
-    format.url = url.format(parsedUrl);
-  }
+  return query;
 }

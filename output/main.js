@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.nodeDefault = exports.List = exports.CommentThreadRepliesContinuatedList = exports.CommentThread = exports.Comment = exports.CommentSectionContinuatedList = exports.Playlist = exports.Video = exports.Channel = exports.Authenticator = exports.ContinuatedList = exports.User = exports.Explorer = exports.WrappedHTTPClient = exports.IYoutube = void 0;
+exports.nodeDefault = exports.HTTPRequestMethod = exports.List = exports.CommentThreadRepliesContinuatedList = exports.CommentThread = exports.Comment = exports.CommentSectionContinuatedList = exports.Playlist = exports.Video = exports.Channel = exports.Authenticator = exports.ContinuatedList = exports.User = exports.Explorer = exports.WrappedHTTPClient = exports.IYoutube = void 0;
 const Explorer_1 = require("./fetchers/Explorer");
 Object.defineProperty(exports, "Explorer", { enumerable: true, get: function () { return Explorer_1.Explorer; } });
 const ContinuatedList_1 = require("./fetchers/ContinuatedList");
@@ -38,6 +38,8 @@ const List_1 = require("./interfaces/List");
 Object.defineProperty(exports, "List", { enumerable: true, get: function () { return List_1.List; } });
 const IYoutube_1 = require("./IYoutube");
 Object.defineProperty(exports, "IYoutube", { enumerable: true, get: function () { return IYoutube_1.default; } });
+const HTTPClient_1 = require("./interfaces/HTTPClient");
+Object.defineProperty(exports, "HTTPRequestMethod", { enumerable: true, get: function () { return HTTPClient_1.HTTPRequestMethod; } });
 const nodeDefault = () => __awaiter(void 0, void 0, void 0, function* () {
     const path = "./nodeDefault";
     const res = yield Promise.resolve().then(() => require(path));

@@ -25,5 +25,6 @@ export default class IYoutube {
     getWhatToWatch(): ContinuatedList;
     getExplorer(): Explorer;
     getUser(): User;
+    getCookies(): string;
     throwErrorIfNotReady(): void;
 }

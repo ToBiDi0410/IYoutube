@@ -14,7 +14,7 @@ const constants_1 = require("../constants");
 const helpers_1 = require("../fetchers/helpers");
 const main_1 = require("../main");
 const HTTPClient_1 = require("./HTTPClient");
-const formatsChipher_1 = require("../formatsChipher");
+const formatsChipher = require("../formatsChipher");
 class Video {
     constructor(httpclient) {
         this.error = false;
@@ -179,46 +179,32 @@ class Video {
                     this.owner.subscribed = helpers_1.default.recursiveSearchForKey("subscribed", nextJSON)[0];
                 }
             }
+            yield this.loadFormats();
         });
     }
     loadFormats() {
         return __awaiter(this, void 0, void 0, function* () {
-            const playerResponse = yield this.httpclient.request({
-                method: HTTPClient_1.HTTPRequestMethod.POST,
-                url: constants_1.ENDPOINT_PLAYER,
-                data: {
-                    videoId: this.videoId,
-                    racyCheckOk: false,
-                    contentCheckOk: false,
-                    playbackContext: {
-                        contentPlaybackContent: {
-                            currentUrl: "/watch?v=6Dh-RL__uN4",
-                            autonavState: "STATE_OFF",
-                            autoCaptionsDefaultOn: false,
-                            html5Preference: "HTML5_PREF_WANTS",
-                            lactMilliseconds: "-1",
-                            referer: "https://www.youtube.com/",
-                            signatureTimestamp: 19095,
-                            splay: false,
-                            vis: 0
-                        }
-                    }
-                }
-            });
-            const playerJSON = yield JSON.parse(playerResponse.data);
-            const formats = helpers_1.default.recursiveSearchForKey("adaptiveFormats", playerJSON)[0];
             const watchURL = new URL(constants_1.ENDPOINT_WATCHPAGE);
             watchURL.searchParams.set("v", this.videoId);
-            const playPage = yield this.httpclient.request({
+            const playPage = yield this.httpclient.client.request({
                 method: HTTPClient_1.HTTPRequestMethod.GET,
-                url: watchURL.toString()
+                url: watchURL.toString(),
+                headers: {
+                    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+                }
             });
             const html = playPage.data;
+            const varFind = html.indexOf("var ytInitialPlayerResponse =");
+            const scriptStart = helpers_1.default.getIndexAfter(">", helpers_1.default.getIndexBefore("<script", varFind, html), html) + 1;
+            const scriptEnd = helpers_1.default.getIndexAfter("</script>", varFind, html);
+            const script = html.substring(scriptStart, scriptEnd);
+            const scriptFunc = new Function(script + " return ytInitialPlayerResponse;");
+            const playerJSON = scriptFunc();
+            const formats = helpers_1.default.recursiveSearchForKey("adaptiveFormats", playerJSON)[0];
             let playerScript = /<script\s+src="([^"]+)"(?:\s+type="text\/javascript")?\s+name="player_ias\/base"\s*>|"jsUrl":"([^"]+)"/.exec(html);
             playerScript = playerScript[2] || playerScript[1];
             const playerURLString = new URL(playerScript, watchURL).href;
-            const cipher = new formatsChipher_1.CiphService(this.httpclient);
-            const resolvedFormats = yield cipher.decipherFormats(formats, playerURLString, {});
+            const resolvedFormats = yield formatsChipher.decipher(formats, playerURLString, this.httpclient);
             this.formats = [];
             resolvedFormats.forEach((a) => {
                 var _a;

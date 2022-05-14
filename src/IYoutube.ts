@@ -112,6 +112,10 @@ export default class IYoutube {
         return this.user;
     }
 
+    getCookies() {
+        return this.wrappedHttpClient.cookieString;
+    }
+
     throwErrorIfNotReady(){
         if(!this.storageAdapter) throw new Error("The provided Storage Adapter was invalid");
         if(!this.rawHttpClient) throw new Error("The provided HTTP Client was invalid");
