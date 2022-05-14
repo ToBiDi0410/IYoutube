@@ -186,7 +186,7 @@ class Video {
         return __awaiter(this, void 0, void 0, function* () {
             const watchURL = new URL(constants_1.ENDPOINT_WATCHPAGE);
             watchURL.searchParams.set("v", this.videoId);
-            const playPage = yield this.httpclient.client.request({
+            const playPage = yield this.httpclient.request({
                 method: HTTPClient_1.HTTPRequestMethod.GET,
                 url: watchURL.toString(),
                 headers: {
@@ -197,7 +197,8 @@ class Video {
             const varFind = html.indexOf("var ytInitialPlayerResponse =");
             const scriptStart = helpers_1.default.getIndexAfter(">", helpers_1.default.getIndexBefore("<script", varFind, html), html) + 1;
             const scriptEnd = helpers_1.default.getIndexAfter("</script>", varFind, html);
-            const script = html.substring(scriptStart, scriptEnd);
+            const scriptBetween = html.substring(scriptStart, scriptEnd);
+            const script = scriptBetween.substring(0, scriptBetween.lastIndexOf("};var") + 2);
             const scriptFunc = new Function(script + " return ytInitialPlayerResponse;");
             const playerJSON = scriptFunc();
             const formats = helpers_1.default.recursiveSearchForKey("adaptiveFormats", playerJSON)[0];

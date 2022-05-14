@@ -240,7 +240,7 @@ export class Video {
         const watchURL = new URL(ENDPOINT_WATCHPAGE);
         watchURL.searchParams.set("v", this.videoId);
 
-        const playPage = await this.httpclient.client.request({
+        const playPage = await this.httpclient.request({
             method: HTTPRequestMethod.GET,
             url: watchURL.toString(),
             headers: {
@@ -253,7 +253,8 @@ export class Video {
         const varFind = html.indexOf("var ytInitialPlayerResponse ="); //Locate the Var Definition
         const scriptStart = helpers.getIndexAfter(">", helpers.getIndexBefore("<script", varFind, html), html) + 1; //Get Script Tag Before
         const scriptEnd = helpers.getIndexAfter("</script>", varFind, html); //Get Script Tag After
-        const script = html.substring(scriptStart, scriptEnd); //Get Script (between both Tags)
+        const scriptBetween = html.substring(scriptStart, scriptEnd); //Get Script (between both Tags)
+        const script = scriptBetween.substring(0, scriptBetween.lastIndexOf("};var") + 2);
 
         const scriptFunc = new Function(script + " return ytInitialPlayerResponse;"); //Parse the Functions Inside
         const playerJSON = scriptFunc(); //Get the Information
