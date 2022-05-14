@@ -17,6 +17,7 @@ import { CommentThreadRepliesContinuatedList } from "./fetchers/CommentThreadRep
 import { CaptionTrack } from "./interfaces/CaptionTrack";
 import { List } from "./interfaces/List";
 import { SearchProposal } from "./interfaces/SearchProposal";
+import { Format } from "./interfaces/Format";
 import { default as IYoutube } from "./IYoutube";
 
 
@@ -42,6 +43,7 @@ export { CommentThreadRepliesContinuatedList as CommentThreadRepliesContinuatedL
 export { CaptionTrack as CaptionTrack }
 export { List as List }
 export { SearchProposal as SearchProposal }
+export { Format as Format }
 
 //Skips Webpack checks
 export const nodeDefault = async ():Promise<IYoutube> => {

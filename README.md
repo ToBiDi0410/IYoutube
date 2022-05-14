@@ -34,6 +34,7 @@ I will do my best to keep up the work on this Project, any Pull Requests or cont
 - Consent Confirmation: https://github.com/ytdl-org/youtube-dl/
 - Visual Studio Code for Development: https://code.visualstudio.com/
 - Google for their API and Chrome Dev Tools to analyse it :)
+- @appit-online for the Deciphering Code (from: https://github.com/appit-online/ionic-youtube-streams)
 
 #### Disclaimers
 - This project is not affiliated or linked to Google/YouTube in any way

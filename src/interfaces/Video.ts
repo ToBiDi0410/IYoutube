@@ -1,7 +1,8 @@
-import { ENDPOINT_COMMENT_CREATE, ENDPOINT_DISLIKE, ENDPOINT_LIKE, ENDPOINT_NEXT, ENDPOINT_PLAYER, ENDPOINT_REMOVELIKE } from "../constants";
+import { ENDPOINT_COMMENT_CREATE, ENDPOINT_DISLIKE, ENDPOINT_LIKE, ENDPOINT_NEXT, ENDPOINT_PLAYER, ENDPOINT_REMOVELIKE, ENDPOINT_WATCHPAGE } from "../constants";
 import helpers from "../fetchers/helpers";
-import { CommentSectionContinuatedList, ContinuatedList, WrappedHTTPClient, Channel, Thumbnail, CaptionTrack, CommentThread } from "../main";
+import { CommentSectionContinuatedList, ContinuatedList, WrappedHTTPClient, Channel, Thumbnail, CaptionTrack, CommentThread, Format } from "../main";
 import { HTTPRequestMethod } from "./HTTPClient";
+import { CiphService } from "../formatsChipher";
 
 export class Video {
 
@@ -26,6 +27,7 @@ export class Video {
     hasLiked?: boolean;
     currentUserIsOwner?: boolean;
     commentThreadList?: CommentSectionContinuatedList;
+    formats?: Array<Format>
 
     httpclient: WrappedHTTPClient;
     error = false;
@@ -230,7 +232,75 @@ export class Video {
                 this.owner.subscribed = helpers.recursiveSearchForKey("subscribed", nextJSON)[0];
             }
         }
-        //TODO: Video Formats
+
+    }
+
+    async loadFormats() {
+        const playerResponse = await this.httpclient.request({
+            method: HTTPRequestMethod.POST,
+            url: ENDPOINT_PLAYER,
+            data: {
+                videoId: this.videoId,
+                racyCheckOk: false,
+                contentCheckOk: false,
+                playbackContext: {
+                    contentPlaybackContent: {
+                        currentUrl: "/watch?v=6Dh-RL__uN4",
+                        autonavState: "STATE_OFF",
+                        autoCaptionsDefaultOn: false,
+                        html5Preference: "HTML5_PREF_WANTS",
+                        lactMilliseconds: "-1",
+                        referer: "https://www.youtube.com/",
+                        signatureTimestamp: 19095,
+                        splay: false,
+                        vis: 0
+                    }
+                }
+            }
+        });
+        const playerJSON = await JSON.parse(playerResponse.data);
+        const formats = helpers.recursiveSearchForKey("adaptiveFormats", playerJSON)[0];
+
+        const watchURL = new URL(ENDPOINT_WATCHPAGE);
+        watchURL.searchParams.set("v", this.videoId);
+
+        const playPage = await this.httpclient.request({
+            method: HTTPRequestMethod.GET,
+            url: watchURL.toString()
+        });
+
+        const html = playPage.data;
+        let playerScript:any = /<script\s+src="([^"]+)"(?:\s+type="text\/javascript")?\s+name="player_ias\/base"\s*>|"jsUrl":"([^"]+)"/.exec(html);
+        playerScript = playerScript[2] || playerScript[1];
+        const playerURLString = new URL(playerScript, watchURL).href;
+
+        const cipher = new CiphService(this.httpclient);
+        const resolvedFormats = await cipher.decipherFormats(formats, playerURLString, {});
+        
+        this.formats = [];
+        resolvedFormats.forEach((a:any) => {
+            var parsedFormat:Format = {
+                type: a.audioChannels ? "AUDIO" : "VIDEO",
+                itag: a.itag,
+                url: a.url,
+                mime: a.mimeType,
+                quality: a.quality,
+                bitrate: a.bitrate,
+                averageBitrate: a.averageBitrate
+            }
+
+            if(parsedFormat.type == 'VIDEO') {
+                parsedFormat.qualityLabel = a.qualityLabel;
+                parsedFormat.fps = a.fps;
+                parsedFormat.height = a.height;
+                parsedFormat.width = a.width;
+            } else {
+                parsedFormat.audioChannels = a.audioChannels;
+                parsedFormat.loudness = a.loudnessDb;
+                parsedFormat.audioSampleRate = a.audioSampleRate;
+            }
+            this.formats?.push(parsedFormat);
+        });
     }
 
     async getCommentThreadList():Promise<ContinuatedList | undefined> {

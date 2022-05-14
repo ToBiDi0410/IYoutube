@@ -1,4 +1,4 @@
-import { CommentSectionContinuatedList, ContinuatedList, WrappedHTTPClient, Channel, Thumbnail, CaptionTrack, CommentThread } from "../main";
+import { CommentSectionContinuatedList, ContinuatedList, WrappedHTTPClient, Channel, Thumbnail, CaptionTrack, CommentThread, Format } from "../main";
 export declare class Video {
     videoId?: any;
     title?: string;
@@ -21,6 +21,7 @@ export declare class Video {
     hasLiked?: boolean;
     currentUserIsOwner?: boolean;
     commentThreadList?: CommentSectionContinuatedList;
+    formats?: Array<Format>;
     httpclient: WrappedHTTPClient;
     error: boolean;
     constructor(httpclient: WrappedHTTPClient);
@@ -29,6 +30,7 @@ export declare class Video {
     fromGridRenderer(obj: any): void;
     fromPlaylistVideoRenderer(obj: any): void;
     loadAll(): Promise<void>;
+    loadFormats(): Promise<void>;
     getCommentThreadList(): Promise<ContinuatedList | undefined>;
     like(): Promise<boolean>;
     dislike(): Promise<boolean>;
