@@ -7,7 +7,7 @@
 
 ##### Videos:
 - [X] Fetch all Information (Youtube Player Response)
-- [ ] Stream URL Decryption & Video Formats
+- [X] Stream URL Decryption & Video/Audio Formats
 - [X] Get Comment Section
 - [X] Like and Dislike Comments
 - [X] Write Comments on Video
