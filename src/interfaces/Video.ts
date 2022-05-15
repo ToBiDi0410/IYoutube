@@ -340,7 +340,6 @@ export class Video {
         });
 
         if(res.status == 200) this.likeState = "LIKE";
-
         return res.status == 200;   
     }
 
@@ -358,7 +357,6 @@ export class Video {
         });
 
         if(res.status == 200) this.likeState = "DISLIKE";
-
         return res.status == 200;
     }
 

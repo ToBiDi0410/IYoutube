@@ -263,7 +263,8 @@ class Channel {
                     params: "EgIIAhgA"
                 }
             });
-            const resJSON = yield JSON.parse(res.data);
+            if (res.status == 200)
+                this.subscribed = true;
             return res.status == 200;
         });
     }
@@ -280,7 +281,8 @@ class Channel {
                     params: "CgIIAhgA"
                 }
             });
-            const resJSON = yield JSON.parse(res.data);
+            if (res.status == 200)
+                this.subscribed = false;
             return res.status == 200;
         });
     }
