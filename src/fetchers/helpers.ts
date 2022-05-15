@@ -51,7 +51,7 @@ function getNumberFromText(str: string):number {
 }
 
 function replaceAll(search:string, value: string, source:string) {
-    return source.replace(new RegExp(search, 'g'), value);
+    return source.replace(new RegExp(escapeRegExp(search), 'g'), value);
 }
 
 function processRendererItems(arr : Array<any>, httpclient: WrappedHTTPClient) {
@@ -138,6 +138,11 @@ function getIndexAfter(str: string, index: number, source: string) {
     var after = source.substring(index, source.length);
     return index + after.indexOf(str);
 }
+
+function escapeRegExp(string:string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
 export default {
     recursiveSearchForPair,
     recursiveSearchForKey,

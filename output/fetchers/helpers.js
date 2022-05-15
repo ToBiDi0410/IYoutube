@@ -48,7 +48,7 @@ function getNumberFromText(str) {
     return number;
 }
 function replaceAll(search, value, source) {
-    return source.replace(new RegExp(search, 'g'), value);
+    return source.replace(new RegExp(escapeRegExp(search), 'g'), value);
 }
 function processRendererItems(arr, httpclient) {
     let processedList = arr.map((elem) => {
@@ -122,6 +122,9 @@ function getIndexBefore(str, index, source) {
 function getIndexAfter(str, index, source) {
     var after = source.substring(index, source.length);
     return index + after.indexOf(str);
+}
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 exports.default = {
     recursiveSearchForPair,

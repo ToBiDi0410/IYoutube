@@ -1,4 +1,4 @@
-import { DEFAULT_CLIENT_VERSION, DEFAULT_USER_AGENT, ENDPOINT_COMMENT_CREATE, ENDPOINT_DISLIKE, ENDPOINT_LIKE, ENDPOINT_NEXT, ENDPOINT_PLAYER, ENDPOINT_REMOVELIKE, ENDPOINT_WATCHPAGE } from "../constants";
+import { DEFAULT_CLIENT_VERSION, DEFAULT_USER_AGENT, ENDPOINT_COMMENT_CREATE, ENDPOINT_DISLIKE, ENDPOINT_LIKE, ENDPOINT_NEXT, ENDPOINT_PLAYER, ENDPOINT_RATING, ENDPOINT_REMOVELIKE, ENDPOINT_WATCHPAGE } from "../constants";
 import helpers from "../fetchers/helpers";
 import { CommentSectionContinuatedList, ContinuatedList, WrappedHTTPClient, Channel, Thumbnail, CaptionTrack, CommentThread, Format } from "../main";
 import { HTTPRequestMethod } from "./HTTPClient";
@@ -27,7 +27,9 @@ export class Video {
     hasLiked?: boolean;
     currentUserIsOwner?: boolean;
     commentThreadList?: CommentSectionContinuatedList;
-    formats?: Array<Format>
+    formats?: Array<Format>;
+    likeCount?: number;
+    dislikeCount?: number;
 
     httpclient: WrappedHTTPClient;
     error = false;
@@ -151,7 +153,7 @@ export class Video {
             this.title = videoDetails.title;
             this.description = videoDetails.shortDescription;
             this.thumbnails = helpers.recursiveSearchForKey("thumbnails", videoDetails)[0];
-            this.viewCount = helpers.getNumberFromText(videoDetails.viewCount);
+            this.viewCount = helpers.getNumberFromText(helpers.recursiveSearchForKey("viewCount", videoDetails).join(""));
             this.private = videoDetails.isPrivate;
             this.live = videoDetails.isLiveContent;
             this.keywords = videoDetails.keywords;
@@ -216,6 +218,9 @@ export class Video {
                 const dislikeButton = buttons[1].toggleButtonRenderer;
                 if(likeButton && dislikeButton)
                     this.hasLiked = likeButton.isToggled && !dislikeButton.isToggled;
+
+                if(likeButton)
+                    this.likeCount = helpers.getNumberFromText(helpers.recursiveSearchForKey("simpleText", helpers.recursiveSearchForKey("defaultText", likeButton)[0]).join(""));
             }
         }
 
@@ -234,6 +239,7 @@ export class Video {
         }
 
         await this.loadFormats();
+        await this.loadRatings();
     }
 
     async loadFormats() {
@@ -291,6 +297,21 @@ export class Video {
             }
             this.formats?.push(parsedFormat);
         });
+    }
+
+    async loadRatings() {
+        const ratingResponse = await this.httpclient.request({
+            url: ENDPOINT_RATING,
+            method: HTTPRequestMethod.GET,
+            params: {
+                videoId: this.videoId
+            }
+        });
+
+        const ratingJSON = await JSON.parse(ratingResponse.data);
+
+        this.likeCount = ratingJSON.likes;
+        this.dislikeCount = ratingJSON.dislikes;
     }
 
     async getCommentThreadList():Promise<ContinuatedList | undefined> {

@@ -35,6 +35,7 @@ I will do my best to keep up the work on this project, any pull requests or cont
 - @Microsoft with Visual Studio Code for development: https://code.visualstudio.com/
 - @Google for their API and Chrome Dev Tools to analyse it :)
 - @TeamNewPipe for the signature code (from: https://github.com/TeamNewPipe/NewPipeExtractor)
+- @Anarios for the Return-YT-Dislike API (https://github.com/Anarios/return-youtube-dislike)
 
 #### Disclaimers
 - This project is not affiliated or linked to Google/YouTube in any way

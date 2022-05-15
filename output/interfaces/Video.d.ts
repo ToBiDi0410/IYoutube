@@ -22,6 +22,8 @@ export declare class Video {
     currentUserIsOwner?: boolean;
     commentThreadList?: CommentSectionContinuatedList;
     formats?: Array<Format>;
+    likeCount?: number;
+    dislikeCount?: number;
     httpclient: WrappedHTTPClient;
     error: boolean;
     constructor(httpclient: WrappedHTTPClient);
@@ -31,6 +33,7 @@ export declare class Video {
     fromPlaylistVideoRenderer(obj: any): void;
     loadAll(): Promise<void>;
     loadFormats(): Promise<void>;
+    loadRatings(): Promise<void>;
     getCommentThreadList(): Promise<ContinuatedList | undefined>;
     like(): Promise<boolean>;
     dislike(): Promise<boolean>;

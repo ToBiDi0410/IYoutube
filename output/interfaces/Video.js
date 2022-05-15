@@ -109,7 +109,7 @@ class Video {
                 this.title = videoDetails.title;
                 this.description = videoDetails.shortDescription;
                 this.thumbnails = helpers_1.default.recursiveSearchForKey("thumbnails", videoDetails)[0];
-                this.viewCount = helpers_1.default.getNumberFromText(videoDetails.viewCount);
+                this.viewCount = helpers_1.default.getNumberFromText(helpers_1.default.recursiveSearchForKey("viewCount", videoDetails).join(""));
                 this.private = videoDetails.isPrivate;
                 this.live = videoDetails.isLiveContent;
                 this.keywords = videoDetails.keywords;
@@ -165,6 +165,8 @@ class Video {
                     const dislikeButton = buttons[1].toggleButtonRenderer;
                     if (likeButton && dislikeButton)
                         this.hasLiked = likeButton.isToggled && !dislikeButton.isToggled;
+                    if (likeButton)
+                        this.likeCount = helpers_1.default.getNumberFromText(helpers_1.default.recursiveSearchForKey("simpleText", helpers_1.default.recursiveSearchForKey("defaultText", likeButton)[0]).join(""));
                 }
             }
             const secondaryInfoRenderer = helpers_1.default.recursiveSearchForKey("videoSecondaryInfoRenderer", nextJSON)[0];
@@ -180,6 +182,7 @@ class Video {
                 }
             }
             yield this.loadFormats();
+            yield this.loadRatings();
         });
     }
     loadFormats() {
@@ -231,6 +234,20 @@ class Video {
                 }
                 (_a = this.formats) === null || _a === void 0 ? void 0 : _a.push(parsedFormat);
             });
+        });
+    }
+    loadRatings() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const ratingResponse = yield this.httpclient.request({
+                url: constants_1.ENDPOINT_RATING,
+                method: HTTPClient_1.HTTPRequestMethod.GET,
+                params: {
+                    videoId: this.videoId
+                }
+            });
+            const ratingJSON = yield JSON.parse(ratingResponse.data);
+            this.likeCount = ratingJSON.likes;
+            this.dislikeCount = ratingJSON.dislikes;
         });
     }
     getCommentThreadList() {
