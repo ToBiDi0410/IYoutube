@@ -197,11 +197,11 @@ class Video {
                 }
             });
             const html = playPage.data;
-            const varFind = html.indexOf("var ytInitialPlayerResponse =");
+            const varFind = html.indexOf("var ytInitialPlayerResponse = {");
             const scriptStart = helpers_1.default.getIndexAfter(">", helpers_1.default.getIndexBefore("<script", varFind, html), html) + 1;
             const scriptEnd = helpers_1.default.getIndexAfter("</script>", varFind, html);
             const scriptBetween = html.substring(scriptStart, scriptEnd);
-            const script = scriptBetween.substring(0, scriptBetween.lastIndexOf("};var") + 2);
+            const script = scriptBetween.substring(0, scriptBetween.lastIndexOf("};") + 2);
             const scriptFunc = new Function(script + " return ytInitialPlayerResponse;");
             const playerJSON = scriptFunc();
             const formats = helpers_1.default.recursiveSearchForKey("adaptiveFormats", playerJSON)[0];

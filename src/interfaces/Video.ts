@@ -256,11 +256,11 @@ export class Video {
 
         const html = playPage.data;
 
-        const varFind = html.indexOf("var ytInitialPlayerResponse ="); //Locate the Var Definition
+        const varFind = html.indexOf("var ytInitialPlayerResponse = {"); //Locate the Var Definition
         const scriptStart = helpers.getIndexAfter(">", helpers.getIndexBefore("<script", varFind, html), html) + 1; //Get Script Tag Before
         const scriptEnd = helpers.getIndexAfter("</script>", varFind, html); //Get Script Tag After
         const scriptBetween = html.substring(scriptStart, scriptEnd); //Get Script (between both Tags)
-        const script = scriptBetween.substring(0, scriptBetween.lastIndexOf("};var") + 2);
+        const script = scriptBetween.substring(0, scriptBetween.lastIndexOf("};") + 2);
 
         const scriptFunc = new Function(script + " return ytInitialPlayerResponse;"); //Parse the Functions Inside
         const playerJSON = scriptFunc(); //Get the Information
