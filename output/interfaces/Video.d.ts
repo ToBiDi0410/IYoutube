@@ -18,12 +18,12 @@ export declare class Video {
     captionTracks?: Array<CaptionTrack>;
     keywords?: Array<String>;
     canLike?: boolean;
-    hasLiked?: boolean;
     currentUserIsOwner?: boolean;
     commentThreadList?: CommentSectionContinuatedList;
     formats?: Array<Format>;
     likeCount?: number;
     dislikeCount?: number;
+    likeState?: "NONE" | "DISLIKE" | "LIKE";
     httpclient: WrappedHTTPClient;
     error: boolean;
     constructor(httpclient: WrappedHTTPClient);

@@ -171,7 +171,8 @@ export class Playlist {
                 target: {
                     playlistId: this.playlistId
                 }
-            }
+            },
+            noCache: true
         });
         return res.status == 200;
     }
@@ -188,7 +189,8 @@ export class Playlist {
                 target: {
                     playlistId: this.playlistId
                 }
-            }
+            },
+            noCache: true
         });
         return res.status == 200;
     }

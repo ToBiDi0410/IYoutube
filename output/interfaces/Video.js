@@ -163,8 +163,14 @@ class Video {
                 if (buttons) {
                     const likeButton = buttons[0].toggleButtonRenderer;
                     const dislikeButton = buttons[1].toggleButtonRenderer;
-                    if (likeButton && dislikeButton)
-                        this.hasLiked = likeButton.isToggled && !dislikeButton.isToggled;
+                    if (likeButton && dislikeButton) {
+                        if (!likeButton.isToggled && !dislikeButton.isToggled)
+                            this.likeState = "NONE";
+                        else if (likeButton.isToggled && !dislikeButton.isToggled)
+                            this.likeState = "LIKE";
+                        else if (!likeButton.isToggled && dislikeButton.isToggled)
+                            this.likeState = "DISLIKE";
+                    }
                     if (likeButton)
                         this.likeCount = helpers_1.default.getNumberFromText(helpers_1.default.recursiveSearchForKey("simpleText", helpers_1.default.recursiveSearchForKey("defaultText", likeButton)[0]).join(""));
                 }
@@ -271,9 +277,11 @@ class Video {
                     target: {
                         videoId: this.videoId
                     }
-                }
+                },
+                noCache: true
             });
-            this.hasLiked = res.status == 200 ? true : this.hasLiked;
+            if (res.status == 200)
+                this.likeState = "LIKE";
             return res.status == 200;
         });
     }
@@ -288,9 +296,11 @@ class Video {
                     target: {
                         videoId: this.videoId
                     }
-                }
+                },
+                noCache: true
             });
-            this.hasLiked = res.status == 200 ? false : this.hasLiked;
+            if (res.status == 200)
+                this.likeState = "DISLIKE";
             return res.status == 200;
         });
     }
@@ -305,9 +315,11 @@ class Video {
                     target: {
                         videoId: this.videoId
                     }
-                }
+                },
+                noCache: true
             });
-            this.hasLiked = res.status == 200 ? undefined : this.hasLiked;
+            if (res.status == 200)
+                this.likeState = "NONE";
             return res.status == 200;
         });
     }
@@ -322,7 +334,8 @@ class Video {
                 data: {
                     commentText: text,
                     createCommentParams: commentParams
-                }
+                },
+                noCache: true
             });
             const resJSON = JSON.parse(res.data);
             const commentThreadRenderer = helpers_1.default.recursiveSearchForKey("commentThreadRenderer", resJSON)[0];

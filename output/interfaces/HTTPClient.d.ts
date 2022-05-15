@@ -7,6 +7,7 @@ export interface HTTPRequestOptions {
     data?: any;
     method: HTTPRequestMethod;
     url: string;
+    noCache?: boolean;
 }
 export interface HTTPResponse {
     status: number;
