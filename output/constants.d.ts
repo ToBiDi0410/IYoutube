@@ -64,4 +64,5 @@ export declare const ENDPOINT_COMMENT_CREATE = "https://www.youtube.com/youtubei
 export declare const ENDPOINT_SEARCH_SUGGEST = "https://clients1.google.com/complete/search";
 export declare const ENDPOINT_WATCHPAGE = "https://www.youtube.com/watch";
 export declare const ENDPOINT_RATING = "https://returnyoutubedislikeapi.com/Votes";
+export declare const ENDPOINT_SPONSORBLOCK_SKIPSEGMENTS = "https://sponsor.ajay.app/api/skipSegments";
 export declare const ERROR_DATA_INVALID_FORMAT: Error;

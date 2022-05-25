@@ -68,6 +68,7 @@ export const ENDPOINT_COMMENT_CREATE = "https://www.youtube.com/youtubei/v1/comm
 export const ENDPOINT_SEARCH_SUGGEST = "https://clients1.google.com/complete/search";
 export const ENDPOINT_WATCHPAGE = "https://www.youtube.com/watch";
 export const ENDPOINT_RATING = "https://returnyoutubedislikeapi.com/Votes";
+export const ENDPOINT_SPONSORBLOCK_SKIPSEGMENTS = "https://sponsor.ajay.app/api/skipSegments";
 
 /* Error */
 export const ERROR_DATA_INVALID_FORMAT = new Error("The Data recieved from the Google API seems to have an invalid format. It might be that Google updated their APIs and this Method no longer Works");

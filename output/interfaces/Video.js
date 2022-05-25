@@ -189,6 +189,7 @@ class Video {
             }
             yield this.loadFormats();
             yield this.loadRatings();
+            yield this.loadSponsorSegments();
         });
     }
     loadFormats() {
@@ -254,6 +255,21 @@ class Video {
             const ratingJSON = yield JSON.parse(ratingResponse.data);
             this.likeCount = ratingJSON.likes;
             this.dislikeCount = ratingJSON.dislikes;
+        });
+    }
+    loadSponsorSegments() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const segmentResponse = yield this.httpclient.request({
+                url: constants_1.ENDPOINT_SPONSORBLOCK_SKIPSEGMENTS,
+                method: HTTPClient_1.HTTPRequestMethod.GET,
+                params: {
+                    videoID: this.videoId
+                }
+            });
+            if (segmentResponse.status != 200)
+                return this.sponsorSegments = [];
+            const segmentJSON = yield JSON.parse(segmentResponse.data);
+            this.sponsorSegments = segmentJSON;
         });
     }
     getCommentThreadList() {

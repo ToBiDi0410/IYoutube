@@ -19,6 +19,7 @@ import { List } from "./interfaces/List";
 import { SearchProposal } from "./interfaces/SearchProposal";
 import { Format } from "./interfaces/Format";
 import { default as IYoutube } from "./IYoutube";
+import { SponsorBlockSegment } from "./interfaces/SponsorBlockSegment";
 import { HTTPRequestOptions, HTTPRequestMethod, HTTPResponse } from "./interfaces/HTTPClient";
 
 
@@ -48,6 +49,7 @@ export { Format as Format }
 export { HTTPRequestMethod as HTTPRequestMethod }
 export { HTTPRequestOptions as HTTPRequestOptions }
 export { HTTPResponse as HTTPResponse }
+export { SponsorBlockSegment as SponsorBlockSegment }
 
 //Skips Webpack checks
 export const nodeDefault = async ():Promise<IYoutube> => {

@@ -1,4 +1,4 @@
-import { CommentSectionContinuatedList, ContinuatedList, WrappedHTTPClient, Channel, Thumbnail, CaptionTrack, CommentThread, Format } from "../main";
+import { CommentSectionContinuatedList, ContinuatedList, WrappedHTTPClient, Channel, Thumbnail, CaptionTrack, CommentThread, Format, SponsorBlockSegment } from "../main";
 export declare class Video {
     videoId?: any;
     title?: string;
@@ -24,6 +24,7 @@ export declare class Video {
     likeCount?: number;
     dislikeCount?: number;
     likeState?: "NONE" | "DISLIKE" | "LIKE";
+    sponsorSegments?: Array<SponsorBlockSegment>;
     httpclient: WrappedHTTPClient;
     error: boolean;
     constructor(httpclient: WrappedHTTPClient);
@@ -34,6 +35,7 @@ export declare class Video {
     loadAll(): Promise<void>;
     loadFormats(): Promise<void>;
     loadRatings(): Promise<void>;
+    loadSponsorSegments(): Promise<never[] | undefined>;
     getCommentThreadList(): Promise<ContinuatedList | undefined>;
     like(): Promise<boolean>;
     dislike(): Promise<boolean>;

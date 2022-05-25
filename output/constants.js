@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ERROR_DATA_INVALID_FORMAT = exports.ENDPOINT_RATING = exports.ENDPOINT_WATCHPAGE = exports.ENDPOINT_SEARCH_SUGGEST = exports.ENDPOINT_COMMENT_CREATE = exports.ENDPOINT_PLAYER = exports.ENDPOINT_COMMENT_ACTION = exports.ENDPOINT_NEXT = exports.ENDPOINT_ADDTOPLAYLIST = exports.ENDPOINT_UNSUBSCRIBE = exports.ENDPOINT_SUBSCRIBE = exports.ENDPOINT_REMOVELIKE = exports.ENDPOINT_DISLIKE = exports.ENDPOINT_LIKE = exports.ENDPOINT_SEARCH = exports.ENDPOINT_BROWSE = exports.CONSOLE_COLORS = exports.DEFAULT_CONTEXT = exports.DEFAULT_USER_AGENT = exports.DEFAULT_CLIENT_NAME = exports.DEFAULT_CLIENT_VERSION = exports.DEFAULT_API_KEY = exports.DEBUG = void 0;
+exports.ERROR_DATA_INVALID_FORMAT = exports.ENDPOINT_SPONSORBLOCK_SKIPSEGMENTS = exports.ENDPOINT_RATING = exports.ENDPOINT_WATCHPAGE = exports.ENDPOINT_SEARCH_SUGGEST = exports.ENDPOINT_COMMENT_CREATE = exports.ENDPOINT_PLAYER = exports.ENDPOINT_COMMENT_ACTION = exports.ENDPOINT_NEXT = exports.ENDPOINT_ADDTOPLAYLIST = exports.ENDPOINT_UNSUBSCRIBE = exports.ENDPOINT_SUBSCRIBE = exports.ENDPOINT_REMOVELIKE = exports.ENDPOINT_DISLIKE = exports.ENDPOINT_LIKE = exports.ENDPOINT_SEARCH = exports.ENDPOINT_BROWSE = exports.CONSOLE_COLORS = exports.DEFAULT_CONTEXT = exports.DEFAULT_USER_AGENT = exports.DEFAULT_CLIENT_NAME = exports.DEFAULT_CLIENT_VERSION = exports.DEFAULT_API_KEY = exports.DEBUG = void 0;
 exports.DEBUG = false;
 exports.DEFAULT_API_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
 exports.DEFAULT_CLIENT_VERSION = "2.20220406.09.00";
@@ -67,4 +67,5 @@ exports.ENDPOINT_COMMENT_CREATE = "https://www.youtube.com/youtubei/v1/comment/c
 exports.ENDPOINT_SEARCH_SUGGEST = "https://clients1.google.com/complete/search";
 exports.ENDPOINT_WATCHPAGE = "https://www.youtube.com/watch";
 exports.ENDPOINT_RATING = "https://returnyoutubedislikeapi.com/Votes";
+exports.ENDPOINT_SPONSORBLOCK_SKIPSEGMENTS = "https://sponsor.ajay.app/api/skipSegments";
 exports.ERROR_DATA_INVALID_FORMAT = new Error("The Data recieved from the Google API seems to have an invalid format. It might be that Google updated their APIs and this Method no longer Works");

@@ -1,6 +1,6 @@
-import { DEFAULT_CLIENT_VERSION, DEFAULT_USER_AGENT, ENDPOINT_COMMENT_CREATE, ENDPOINT_DISLIKE, ENDPOINT_LIKE, ENDPOINT_NEXT, ENDPOINT_PLAYER, ENDPOINT_RATING, ENDPOINT_REMOVELIKE, ENDPOINT_WATCHPAGE } from "../constants";
+import { DEFAULT_CLIENT_VERSION, DEFAULT_USER_AGENT, ENDPOINT_COMMENT_CREATE, ENDPOINT_DISLIKE, ENDPOINT_LIKE, ENDPOINT_NEXT, ENDPOINT_PLAYER, ENDPOINT_RATING, ENDPOINT_REMOVELIKE, ENDPOINT_SPONSORBLOCK_SKIPSEGMENTS, ENDPOINT_WATCHPAGE } from "../constants";
 import helpers from "../fetchers/helpers";
-import { CommentSectionContinuatedList, ContinuatedList, WrappedHTTPClient, Channel, Thumbnail, CaptionTrack, CommentThread, Format } from "../main";
+import { CommentSectionContinuatedList, ContinuatedList, WrappedHTTPClient, Channel, Thumbnail, CaptionTrack, CommentThread, Format, SponsorBlockSegment } from "../main";
 import { HTTPRequestMethod } from "./HTTPClient";
 import * as formatsChipher from "../formatsChipher";
 
@@ -30,6 +30,7 @@ export class Video {
     likeCount?: number;
     dislikeCount?: number;
     likeState?: "NONE" | "DISLIKE" | "LIKE";
+    sponsorSegments?: Array<SponsorBlockSegment>;
 
     httpclient: WrappedHTTPClient;
     error = false;
@@ -244,6 +245,7 @@ export class Video {
 
         await this.loadFormats();
         await this.loadRatings();
+        await this.loadSponsorSegments();
     }
 
     async loadFormats() {
@@ -316,6 +318,21 @@ export class Video {
 
         this.likeCount = ratingJSON.likes;
         this.dislikeCount = ratingJSON.dislikes;
+    }
+
+    async loadSponsorSegments() {
+        const segmentResponse = await this.httpclient.request({
+            url: ENDPOINT_SPONSORBLOCK_SKIPSEGMENTS,
+            method: HTTPRequestMethod.GET,
+            params: {
+                videoID: this.videoId
+            }
+        });
+
+        if(segmentResponse.status != 200) return this.sponsorSegments = [];
+
+        const segmentJSON = await JSON.parse(segmentResponse.data);
+        this.sponsorSegments = segmentJSON;
     }
 
     async getCommentThreadList():Promise<ContinuatedList | undefined> {
