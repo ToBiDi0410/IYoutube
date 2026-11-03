@@ -1,3 +1,12 @@
+> [!WARNING]
+> **Deprecated / Unmaintained**
+>
+> This project is no longer actively maintained and will not receive further updates, bug fixes, or security patches.   
+> It is kept available for reference and archival purposes.
+>
+> Use at your own risk.
+
+
 <h1 align="center">IYoutube</h1>
 
 <p align=center>
